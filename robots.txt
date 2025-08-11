@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.didianolue.co.uk/sitemap.xml
+
+# Block common bot-accessed files
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /admin/
+Disallow: /cgi-bin/
+Disallow: /*.css$
+Disallow: /*.js$
+
+# Allow important resources
+Allow: /images/
+Allow: /*.css$
+Allow: /*.js$
+
+# Crawl delay (optional - helps with server load)
+Crawl-delay: 1
