@@ -132,11 +132,211 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
     <style>
+        /* --- Chatbot Styles --- */
         body {
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             color: #374151; /* Default text color: Tailwind gray-700 */
+        }
+
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        #chatbot-toggle {
+            background-color: #1d4ed8; /* Primary Blue */
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        #chatbot-toggle:hover {
+            background-color: #2563eb;
+            transform: scale(1.1);
+        }
+
+        #chatbot-widget {
+            width: 370px;
+            height: 500px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.5);
+            opacity: 0;
+            transform-origin: bottom right;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            margin-top: 10px;
+        }
+
+        #chatbot-widget.open {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        #chatbot-header {
+            background-color: #1d4ed8;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        #chatbot-header h3 {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        #chat-messages {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background-color: #f9fafb; /* Very Light BG */
+        }
+
+        .chat-message {
+            margin-bottom: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            max-width: 85%;
+        }
+
+        .chat-message .message-content {
+            padding: 0.75rem 1rem;
+            border-radius: 1.125rem;
+            line-height: 1.5;
+        }
+        
+        .chat-message .message-content a {
+            color: #2563eb;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .user-message .message-content {
+            background-color: #3b82f6; /* Accent Blue */
+            color: white;
+            border-bottom-right-radius: 0.375rem;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .bot-message .message-content {
+            background-color: #e5e7eb; /* Border Color */
+            color: #1f2937;
+            border-bottom-left-radius: 0.375rem;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: #9ca3af;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+        #chat-input-container {
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        #chat-input {
+            flex-grow: 1;
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #chat-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+
+        #chat-send {
+            background-color: #1d4ed8;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        #chat-send:hover {
+            background-color: #2563eb;
+        }
+        
+        .quick-replies {
+            padding: 0.5rem 1rem 0 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .quick-reply {
+            background-color: transparent;
+            border: 1px solid #3b82f6;
+            color: #3b82f6;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .quick-reply:hover {
+            background-color: #3b82f6;
+            color: white;
         }
 
         /* New Color Scheme Variables (Inspired by image) */
@@ -657,7 +857,7 @@
                                 How AI will transform G-Cloud 15 and UK government procurement in 2025. Expert insights on implementation strategies, risk management, and opportunities for both buyers and suppliers.
                             </p>
                             <div class="flex items-center gap-4 text-sm text-slate-500">
-                                <span><i class="fas fa-calendar mr-1"></i> August 11, 2025</span>
+                                <span><i class="fas fa-calendar mr-1"></i> January 15, 2025</span>
                                 <span><i class="fas fa-clock mr-1"></i> 15 min read</span>
                                 <span><i class="fas fa-tag mr-1"></i> AI, Public Sector, G-Cloud 15, Technology</span>
                             </div>
@@ -684,7 +884,7 @@
                                 Expert guide to navigating G-Cloud 15 under the new Procurement Act 2023. Learn the key changes, avoid common pitfalls, and maximize value from your next public sector technology procurement.
                             </p>
                             <div class="flex items-center gap-4 text-sm text-slate-500">
-                                <span><i class="fas fa-calendar mr-1"></i> August 11, 2025</span>
+                                <span><i class="fas fa-calendar mr-1"></i> January 15, 2025</span>
                                 <span><i class="fas fa-clock mr-1"></i> 12 min read</span>
                                 <span><i class="fas fa-tag mr-1"></i> Public Sector, G-Cloud, Procurement</span>
                             </div>
@@ -1020,6 +1220,35 @@
         </div>
     </footer>
 
+    <!-- Chatbot HTML Structure -->
+    <div id="chatbot-container">
+        <!-- Chatbot Widget -->
+        <div id="chatbot-widget" class="hidden">
+            <div id="chatbot-header">
+                <div>
+                    <h3 class="text-lg font-bold">Didi Anolue | AI Assistant</h3>
+                    <span class="text-xs opacity-80">Typically replies instantly</span>
+                </div>
+            </div>
+            <div id="chat-messages">
+                <!-- Messages will be appended here by JavaScript -->
+            </div>
+            <div id="quick-replies-container" class="quick-replies">
+                <!-- Quick replies will be appended here by JavaScript -->
+            </div>
+            <div id="chat-input-container">
+                <input type="text" id="chat-input" placeholder="Ask a question...">
+                <button id="chat-send" aria-label="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Chatbot Toggle Button -->
+        <button id="chatbot-toggle" aria-label="Toggle chatbot">
+            <i class="fas fa-comments text-2xl"></i>
+        </button>
+    </div>
+
     <script>
         // Mobile menu toggle
         const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -1054,6 +1283,246 @@
             section.style.transform = "translateY(20px)";
             section.style.transition = "opacity 0.6s ease-out, transform 0.6s ease-out";
             observer.observe(section);
+        });
+
+        // --- Chatbot JavaScript Logic ---
+        // DOM Element References
+        const chatbotToggle = document.getElementById('chatbot-toggle');
+        const chatbotWidget = document.getElementById('chatbot-widget');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        const quickRepliesContainer = document.getElementById('quick-replies-container');
+
+        // Chatbot State
+        let isOpen = false;
+        let conversationHistory = [];
+
+        // Expanded Knowledge Base
+        const knowledgeBase = {
+            // Greetings
+            "hello": "Hello! I'm Didi's AI assistant. How can I help you today? You can ask me about her services, expertise, or how to get in touch.",
+            "hi": "Hi there! I'm Didi's AI assistant, ready to answer your questions. What's on your mind?",
+            "hey": "Hey! I'm here to help you learn about Didi's commercial consulting services. What would you like to know?",
+            "good morning": "Good morning! I'm Didi's AI assistant. How can I help you today?",
+            "good afternoon": "Good afternoon! I'm here to answer your questions about Didi's services. What can I help you with?",
+            
+            // About the assistant
+            "who are you": "I'm an AI assistant designed to help you learn more about Didi Anolue's commercial consulting services.",
+            "what can you do": "I can tell you about Didi's expertise in procurement and contract management, explain her services, guide you to her resources, and help you schedule a call. What would you like to know?",
+            "help": "I can help you with information about Didi's services, expertise, case studies, free resources, and scheduling a discovery call. Just ask me anything!",
+            
+            // Services - Main categories
+            "services": "Didi offers a range of expert services, including: Commercial & Contract Management, IT Transformation Leadership, Public Sector Procurement, and SME & Start-Up Support. Which area interests you most?",
+            "what services": "Didi offers comprehensive commercial consulting services: Commercial & Contract Management, IT Transformation Leadership, Public Sector Procurement, SME & Start-Up Support, and Mentoring & Training.",
+            "commercial consulting": "Didi provides commercial consulting to optimize your business relationships, contracts, and procurement processes. This typically results in 10-30% cost savings and significantly reduced project risks.",
+            
+            // Contract Management
+            "contract management": "Didi excels at managing high-value, complex outsourcing contracts from start to finish. This includes careful drafting, risk identification, and skilled negotiation to secure the best terms and cost savings for her clients.",
+            "contracts": "Didi manages complex outsourcing contracts with careful drafting, risk identification, and skilled negotiation. Her expertise spans all contract phases from initial drafting to final closure.",
+            "contract negotiation": "Didi's skilled negotiation experience with major vendors like Oracle, Workday, and IBM helps secure optimal terms and significant cost savings for her clients.",
+            
+            // Procurement
+            "procurement": "Didi specialises in creating smart procurement strategies, particularly for the public sector. She's an expert in using frameworks like CCS and G-Cloud to ensure compliance and best value.",
+            "procurement strategy": "Didi creates bespoke procurement strategies aligned with your goals, leveraging market insights and best practices to maximize value and ensure compliance.",
+            "sourcing": "Didi's sourcing expertise covers all IT categories - Software (SaaS), Hardware, Cloud (AWS, Azure), Telecoms, and Professional Services, enabling effective negotiations with major vendors.",
+            
+            // Public Sector
+            "public sector": "Yes, Didi has extensive experience with the public sector, having worked on major programmes for the Ministry of Justice, Metropolitan Police, and the Houses of Parliament. She is an expert in navigating UK public procurement regulations.",
+            "g-cloud": "Didi is an expert in G-Cloud frameworks, helping public sector organizations navigate the latest G-Cloud 15 under the new Procurement Act 2023 for compliant and value-driven procurement.",
+            "ccs": "Didi expertly uses CCS (Crown Commercial Service) agreements and frameworks to ensure public sector organizations get the best value while maintaining full compliance.",
+            "government": "Didi has extensive government experience including Ministry of Justice FITS Programme, Metropolitan Police TTPI, and Houses of Parliament Restoration & Renewal Programme.",
+            
+            // IT Transformation
+            "it transformation": "Didi leads the commercial, contract, and procurement aspects of major IT transformations, setting up clear governance and keeping stakeholders aligned throughout the process.",
+            "transformation": "When you're facing big IT changes, Didi leads the commercial side, setting up clear governance, aligning stakeholders, and ensuring everything runs smoothly from a commercial perspective.",
+            "it projects": "Didi has managed commercial aspects of major IT projects including global platforms for BP and Renault-Nissan Alliance, ensuring successful delivery and value realization.",
+            
+            // Experience & Expertise  
+            "expertise": "Didi has over 20 years of expertise in commercial, contracts, and procurement, especially within major IT transformation programmes for both public and private sectors. She's an expert in managing complex contracts, mitigating risk, and maximising value.",
+            "experience": "With over 20 years of global experience, Didi has worked with major organizations including BP, BBC, Metropolitan Police, Ministry of Justice, and Houses of Parliament on complex commercial programmes.",
+            "20 years": "Yes, Didi has over 20 years of expertise in commercial, contracts, and procurement across both public and private sectors globally.",
+            
+            // OPERATE Framework
+            "operate framework": "The OPERATE™ framework is Didi's proprietary structured approach to client engagements, ensuring clarity and success from the initial discovery call to the final handover.",
+            "operate": "OPERATE™ stands for: Objectives alignment, Planning & preparation, Engagement strategy, Risk management, Award & implementation, Transition management, and Evaluation & optimization.",
+            "framework": "Didi uses her OPERATE™ framework - a systematic 7-step approach ensuring consistent results across complex IT transformations and procurement programmes.",
+            "methodology": "Didi's OPERATE™ methodology provides a structured yet flexible approach to deliver consistent results, from discovery and scoping through to review and optimization.",
+            
+            // Resources
+            "resources": "Didi offers some excellent free resources. There's a case study for businesses and an 'AI Playbook for Professionals'. Which one would you like to see?",
+            "free resources": "Didi provides two fantastic free resources: a detailed case study showing real business results, and the 2025 AI Playbook for Commercial and Procurement Professionals.",
+            "playbook": "You can download the 2025 AI Playbook for free! It's packed with insights for commercial, contract management, and procurement professionals. Here is the link: <a href='https://didi-anolue.kit.com/aiplaybook' target='_blank'>Download Playbook</a>.",
+            "ai playbook": "The 2025 AI Playbook is free and specifically designed for commercial, contract management, and procurement professionals. <a href='https://didi-anolue.kit.com/aiplaybook' target='_blank'>Download it here</a>.",
+            "case study": "Of course. You can see real-world examples of how Didi has helped businesses by downloading her case study here: <a href='https://didi-anolue.kit.com/smithnephew' target='_blank'>Download Case Study</a>.",
+            
+            // Contact & Scheduling
+            "contact": "The best way to start a conversation is by scheduling a free discovery call. Would you like the link to her calendar?",
+            "schedule call": "Great! You can schedule a 30-minute discovery call directly on Didi's calendar here: <a href='https://calendly.com/theconcurrentcontractor/30min' target='_blank'>Schedule a Call</a>. It's the perfect way to discuss your project.",
+            "discovery call": "Perfect! The 30-minute discovery call is free and the best way to discuss your specific needs. <a href='https://calendly.com/theconcurrentcontractor/30min' target='_blank'>Book your call here</a>.",
+            "meeting": "You can book a 30-minute discovery call to discuss your project needs: <a href='https://calendly.com/theconcurrentcontractor/30min' target='_blank'>Schedule Meeting</a>.",
+            "email": "You can reach Didi directly via email at didi@didianolue.co.uk, but for project discussions, scheduling a call is usually more efficient.",
+            "phone": "The best way to speak with Didi is to schedule a discovery call through her calendar: <a href='https://calendly.com/theconcurrentcontractor/30min' target='_blank'>Book a Call</a>.",
+            
+            // Pricing & ROI
+            "cost": "Investment varies by project complexity and scope. Most clients see 3-5x ROI through cost savings and risk mitigation. Schedule a discovery call to discuss your specific needs and get a tailored proposal.",
+            "price": "Pricing depends on your project requirements. Clients typically achieve 10-30% cost savings, making the investment very worthwhile. Let's discuss your specific needs in a discovery call.",
+            "roi": "Clients typically see 3-5x ROI through cost savings, risk mitigation, and improved supplier performance. Benefits include 10-30% procurement cost reduction and 40-60% faster contract negotiation.",
+            "savings": "Didi's clients typically achieve 10-30% reduction in procurement costs, 40-60% faster contract negotiations, and significantly reduced commercial risks - usually resulting in 3-5x ROI.",
+            
+            // Industries & Clients
+            "clients": "Didi has worked with major organizations including BP, BBC, Metropolitan Police, Ministry of Justice, Houses of Parliament, Renault-Nissan Alliance, and many SMEs and start-ups.",
+            "industries": "Didi serves Public Sector, Technology & IT Services, Energy, Telecommunications, Media, Retail, and SMEs/Start-ups across the UK, Europe, North America, and Asia-Pacific.",
+            "bp": "Yes, Didi worked on Project Forge - a Global Hosting Service for BP delivered by HPE, managing the commercial and contract aspects of this major transformation.",
+            "bbc": "Didi worked on the BBC Multimedia Technology Programme with Atos (formerly Siemens), handling the commercial and procurement leadership.",
+            
+            // SME & Start-ups
+            "sme": "For SMEs and start-ups, Didi designs practical Procurement and Contract Management systems from the ground up, giving you a strong commercial foundation to grow sustainably.",
+            "startup": "Didi helps start-ups build scalable procurement and contract management systems from the ground up, providing a solid commercial foundation for growth.",
+            "small business": "Didi works with businesses of all sizes, designing practical systems for SMEs while also leading complex transformation programmes for large organizations.",
+            
+            // Training & Mentoring
+            "training": "Didi designs and runs practical Contract Management workshops that boost project teams' commercial understanding and help everyone stick to agreements.",
+            "mentoring": "Didi helps develop procurement professionals through dedicated mentoring, sharing her 20+ years of expertise to advance careers and capabilities.",
+            "workshops": "Didi's Contract Management workshops are practical and designed to boost your project teams' commercial understanding and compliance with agreements.",
+            
+            // Location & Global
+            "location": "Didi serves clients globally including UK, Europe, North America, and Asia-Pacific with flexible engagement models - remote, on-site, or hybrid delivery.",
+            "global": "Yes, Didi works internationally across the UK, Europe, North America, and Asia-Pacific, with expertise in international procurement frameworks and cross-border compliance.",
+            "remote": "Didi offers flexible engagement models including remote, on-site, or hybrid delivery across all time zones for international projects.",
+            
+            // Specific Questions
+            "how long": "Engagement duration varies by complexity: advisory projects 2-3 months, major IT transformations 12-24 months, procurement strategy development 3-6 months.",
+            "when": "Didi can typically start new engagements within 2-4 weeks. As an interim consultant, she integrates quickly and can scale involvement based on project phases.",
+            "availability": "Didi's availability depends on current commitments. The best way to check availability and discuss timing is to schedule a discovery call.",
+            
+            // Compliance & Regulations
+            "compliance": "Didi ensures full compliance with UK procurement regulations including Public Contracts Regulations 2015, CCS frameworks, and G-Cloud processes while achieving commercial objectives.",
+            "regulations": "Didi maintains up-to-date knowledge of UK and EU procurement regulations, ensuring your procurement activities remain fully compliant while maximizing value.",
+            
+            // Default responses for unmatched queries
+            "default": "That's an interesting question! While I can help with information about Didi's services, expertise, and resources, for more specific questions about your project needs, I'd recommend scheduling a discovery call where Didi can provide personalized advice.",
+            "more info": "For more detailed information about how Didi can help with your specific situation, I'd recommend downloading her case study or scheduling a discovery call to discuss your needs directly.",
+            "thank you": "You're very welcome! Is there anything else you'd like to know about Didi's services or would you like to schedule a discovery call?",
+            "thanks": "My pleasure! Feel free to ask about any other aspects of Didi's expertise, or schedule a call to discuss your specific needs."
+        };
+        
+        const initialQuickReplies = ["What services do you offer?", "Tell me about your resources", "How can I schedule a call?"];
+
+        const toggleChatbot = () => {
+            isOpen = !isOpen;
+            chatbotWidget.classList.toggle('hidden');
+            setTimeout(() => { chatbotWidget.classList.toggle('open'); }, 10);
+            if (isOpen) {
+                chatbotToggle.innerHTML = '<i class="fas fa-times text-2xl"></i>';
+                if (conversationHistory.length === 0) {
+                    addBotMessage("Hello! I'm Didi's AI assistant. I can answer questions about her services, resources, or help you schedule a call. What can I help you with today?");
+                    showQuickReplies(initialQuickReplies);
+                }
+            } else {
+                chatbotToggle.innerHTML = '<i class="fas fa-comments text-2xl"></i>';
+            }
+        };
+
+        const addMessage = (sender, message) => {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `chat-message ${sender}-message`;
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.innerHTML = message;
+            messageWrapper.appendChild(messageContent);
+            chatMessages.appendChild(messageWrapper);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+        
+        const addBotMessage = (message) => { addMessage('bot', message); conversationHistory.push({ role: "model", parts: [{ text: message }] }); };
+        const addUserMessage = (message) => { addMessage('user', message); conversationHistory.push({ role: "user", parts: [{ text: message }] }); };
+        
+        const showTypingIndicator = () => {
+            const typingIndicator = document.createElement('div');
+            typingIndicator.id = 'typing-indicator';
+            typingIndicator.className = 'chat-message bot-message typing-indicator';
+            typingIndicator.innerHTML = '<span></span><span></span><span></span>';
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+
+        const hideTypingIndicator = () => {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        };
+        
+        const showQuickReplies = (replies) => {
+            quickRepliesContainer.innerHTML = '';
+            replies.forEach(replyText => {
+                const button = document.createElement('button');
+                button.className = 'quick-reply';
+                button.textContent = replyText;
+                button.onclick = () => handleQuickReply(replyText);
+                quickRepliesContainer.appendChild(button);
+            });
+        };
+        
+        const handleQuickReply = (replyText) => {
+            addUserMessage(replyText);
+            quickRepliesContainer.innerHTML = '';
+            processUserInput(replyText);
+        };
+
+        const processUserInput = (input) => {
+            const lowerInput = input.toLowerCase().trim();
+            let response = knowledgeBase.default;
+            let found = false;
+            
+            // Look for keyword matches
+            for (const key in knowledgeBase) {
+                if (lowerInput.includes(key)) {
+                    response = knowledgeBase[key];
+                    found = true;
+                    break;
+                }
+            }
+            
+            showTypingIndicator();
+            setTimeout(() => {
+                hideTypingIndicator();
+                addBotMessage(response);
+                
+                // Show contextual quick replies based on response content
+                if (response.includes("services") || response.includes("Commercial & Contract Management")) {
+                    showQuickReplies(["Tell me about contract management", "What about public sector?", "How about SME support?"]);
+                } else if (response.includes("resources") || response.includes("playbook")) {
+                    showQuickReplies(["Download playbook", "Show me case study", "Schedule a call"]);
+                } else if (response.includes("contact") || response.includes("call")) {
+                    showQuickReplies(["Schedule call", "What's your email?"]);
+                } else if (response.includes("expertise") || response.includes("experience")) {
+                    showQuickReplies(["Tell me about your clients", "What industries?", "Show me resources"]);
+                } else if (response.includes("procurement") || response.includes("contracts")) {
+                    showQuickReplies(["What about G-Cloud?", "Tell me about CCS", "Schedule a call"]);
+                } else if (!found) {
+                    // For unknown queries, provide helpful quick replies
+                    showQuickReplies(["What services do you offer?", "Show me resources", "Schedule a call"]);
+                }
+            }, 1000);
+        };
+        
+
+        chatbotToggle.addEventListener('click', toggleChatbot);
+        chatSend.addEventListener('click', () => {
+            const userInput = chatInput.value.trim();
+            if (userInput) {
+                addUserMessage(userInput);
+                processUserInput(userInput);
+                chatInput.value = '';
+                quickRepliesContainer.innerHTML = '';
+            }
+        });
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                chatSend.click();
+            }
         });
     </script>
 
