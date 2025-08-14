@@ -145,7 +145,7 @@
             bottom: 20px;
             right: 20px;
             z-index: 1000;
-            display: flex;
+            display: flex !important;
             flex-direction: column;
             align-items: flex-end;
         }
@@ -346,11 +346,13 @@
             #chatbot-container {
                 bottom: 5px;
                 right: 5px;
-                left: 5px;
+                left: auto;
+                max-width: calc(100vw - 10px);
             }
             
             #chatbot-widget {
                 width: calc(100vw - 70px);
+                max-width: 300px;
                 height: 400px;
                 border-radius: 10px;
                 margin-right: 5px;
@@ -359,6 +361,7 @@
             #chatbot-toggle {
                 width: 50px;
                 height: 50px;
+                flex-shrink: 0;
             }
         }
 
@@ -372,14 +375,31 @@
 
         /* Very small screens */
         @media (max-width: 320px) {
+            #chatbot-container {
+                bottom: 5px;
+                right: 5px;
+                left: auto;
+                max-width: calc(100vw - 10px);
+            }
+            
             #chatbot-widget {
                 width: calc(100vw - 60px);
+                max-width: 260px;
                 height: 350px;
             }
             
             #chatbot-toggle {
                 width: 45px;
                 height: 45px;
+            }
+        }
+
+        /* Ensure chatbot never goes off-screen horizontally */
+        @media (max-width: 400px) {
+            #chatbot-container {
+                right: 5px !important;
+                left: auto !important;
+                max-width: calc(100vw - 10px) !important;
             }
         }
         
