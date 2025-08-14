@@ -402,6 +402,41 @@
                 max-width: calc(100vw - 10px) !important;
             }
         }
+
+        /* Ultra-narrow screens (folded phones like Pixel Fold) */
+        @media (max-width: 290px) {
+            #chatbot-container {
+                bottom: 5px !important;
+                right: 3px !important;
+                left: auto !important;
+                max-width: calc(100vw - 6px) !important;
+            }
+            
+            #chatbot-widget {
+                width: calc(100vw - 50px) !important;
+                max-width: 240px !important;
+                height: 320px !important;
+                margin-right: 2px !important;
+            }
+            
+            #chatbot-toggle {
+                width: 40px !important;
+                height: 40px !important;
+            }
+            
+            #chatbot-toggle i {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Prevent horizontal overflow on any screen */
+        body {
+            overflow-x: hidden;
+        }
+        
+        html {
+            overflow-x: hidden;
+        }
         
         .quick-replies {
             padding: 0.5rem 1rem 0 1rem;
