@@ -767,7 +767,6 @@
                 <a href="#about" class="nav-link">About</a>
                 <a href="#expertise" class="nav-link">Expertise</a>
                 <a href="#key-programmes" class="nav-link">Key Programmes</a>
-                <a href="#resources" class="nav-link">Resources</a>
                 <a href="#insights" class="nav-link">Insights</a>
                 <a href="#faq" class="nav-link">FAQ</a>
                 <a href="#contact" class="nav-link">Contact</a>
@@ -782,7 +781,6 @@
             <a href="#about" class="block nav-link px-6 py-3 text-lg">About</a>
             <a href="#expertise" class="block nav-link px-6 py-3 text-lg">Expertise</a>
             <a href="#key-programmes" class="block nav-link px-6 py-3 text-lg">Key Programmes</a>
-            <a href="#resources" class="block nav-link px-6 py-3 text-lg">Resources</a>
             <a href="#insights" class="block nav-link px-6 py-3 text-lg">Insights</a>
             <a href="#faq" class="block nav-link px-6 py-3 text-lg">FAQ</a>
             <a href="#contact" class="block nav-link px-6 py-3 text-lg">Contact</a>
@@ -1461,7 +1459,6 @@
                 <a href="#about" class="transition-colors hover:text-sky-300">About</a>
                 <a href="#expertise" class="transition-colors hover:text-sky-300">Expertise</a>
                 <a href="#key-programmes" class="transition-colors hover:text-sky-300">Key Programmes</a>
-                <a href="#resources" class="transition-colors hover:text-sky-300">Resources</a>
                 <a href="#insights" class="transition-colors hover:text-sky-300">Insights</a>
                 <a href="#faq" class="transition-colors hover:text-sky-300">FAQ</a>
                 <a href="#contact" class="transition-colors hover:text-sky-300">Contact</a>
@@ -1661,7 +1658,7 @@
             "thanks": "My pleasure! Feel free to ask about any other aspects of Didi's expertise, or schedule a call to discuss your specific needs."
         };
         
-        const initialQuickReplies = ["What services do you offer?", "Tell me about your resources", "How can I schedule a call?"];
+        const initialQuickReplies = ["What services do you offer?", "Tell me about your playbook", "How can I schedule a call?"];
 
         const toggleChatbot = () => {
             isOpen = !isOpen;
@@ -1670,7 +1667,7 @@
             if (isOpen) {
                 chatbotToggle.innerHTML = '<i class="fas fa-times text-2xl"></i>';
                 if (conversationHistory.length === 0) {
-                    addBotMessage("Hello! I'm Didi's AI assistant. I can answer questions about her services, resources, or help you schedule a call. What can I help you with today?");
+                    addBotMessage("Hello! I'm Didi's AI assistant. I can answer questions about her services, expertise, or help you schedule a call. What can I help you with today?");
                     showQuickReplies(initialQuickReplies);
                 }
             } else {
@@ -1752,12 +1749,12 @@
                 } else if (response.includes("contact") || response.includes("call")) {
                     showQuickReplies(["Schedule call", "What's your email?"]);
                 } else if (response.includes("expertise") || response.includes("experience")) {
-                    showQuickReplies(["Tell me about your clients", "What industries?", "Show me resources"]);
+                    showQuickReplies(["Tell me about your clients", "What industries?", "Download playbook"]);
                 } else if (response.includes("procurement") || response.includes("contracts")) {
                     showQuickReplies(["What about G-Cloud?", "Tell me about CCS", "Schedule a call"]);
                 } else if (!found) {
                     // For unknown queries, provide helpful quick replies
-                    showQuickReplies(["What services do you offer?", "Show me resources", "Schedule a call"]);
+                    showQuickReplies(["What services do you offer?", "Tell me about your playbook", "Schedule a call"]);
                 }
             }, 1000);
         };
