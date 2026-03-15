@@ -677,7 +677,7 @@ textarea { min-height: 68px; }
 
 <script>
 // ── Auth gate ──────────────────────────────────────────────────
-const ADMIN_PASSWORD_HASH = 'REPLACE_WITH_YOUR_PASSWORD_HASH';
+const ADMIN_PASSWORD_HASH = '924325fbd85f063f2439544a4bd4cbe61433c2c83eb3e5a7ead42b984b7a2223';
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
