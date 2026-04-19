@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Hub | Didi Anolue Consulting</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
+
+:root {
+  --ink:          #0F1A2E;
+  --navy:         #1F3864;
+  --navy-mid:     #2E5FA3;
+  --blue:         #4A7FC1;
+  --blue-pale:    #D6E4F7;
+  --blue-ghost:   #EBF2FB;
+  --amber:        #D4860A;
+  --amber-pale:   #FEF3DC;
+  --red:          #C0392B;
+  --red-pale:     #FDECEA;
+  --green:        #2F7A4E;
+  --green-pale:   #D4EDDF;
+  --cream:        #F7FAFF;
+  --white:        #FFFFFF;
+  --border:       #C5D8F0;
+  --muted:        #6B7B8F;
+  --sidebar-w:    240px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; line-height: 1.5; }
+
+/* ══ LOGIN ══════════════════════════════════════════════ */
+#loginScreen { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: var(--navy); }
+.login-card { background: var(--white); border-radius: 20px; padding: 3rem 2.5rem; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 24px 64px rgba(0,0,0,0.3); }
+.login-monogram { width: 64px; height: 64px; background: var(--navy); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700; color: white; margin: 0 auto 1.25rem; letter-spacing: -0.02em; }
+.login-title { font-size: 1.5rem; font-weight: 700; color: var(--navy); margin-bottom: 0.25rem; }
+.login-sub { color: var(--muted); font-size: 0.875rem; margin-bottom: 2rem; }
+.login-field { display: flex; flex-direction: column; gap: 0.4rem; text-align: left; margin-bottom: 1rem; }
+.login-field label { font-size: 0.75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.login-field input { width: 100%; padding: 0.85rem 1rem; border: 2px solid var(--border); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--ink); background: var(--cream); transition: border-color 0.2s; outline: none; }
+.login-field input:focus { border-color: var(--blue); background: var(--white); }
+.login-btn { width: 100%; background: var(--navy); color: var(--white); border: none; border-radius: 10px; padding: 0.95rem; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; transition: background 0.2s; }
+.login-btn:hover { background: var(--navy-mid); }
+.login-error { display: none; color: var(--red); font-size: 0.875rem; margin-top: 0.75rem; background: var(--red-pale); border-radius: 8px; padding: 0.6rem 0.9rem; }
+.login-error.show { display: block; }
+
+/* ══ APP SHELL ══════════════════════════════════════════ */
+#hubApp { display: none; min-height: 100vh; }
+#hubApp.visible { display: flex; }
+
+/* ── Sidebar ── */
+.sidebar { width: var(--sidebar-w); height: 100vh; background: var(--navy); color: var(--white); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; overflow-y: auto; }
+.sidebar-brand { padding: 1.5rem 1.25rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 0.75rem; }
+.sidebar-brand-icon { width: 38px; height: 38px; background: rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; flex-shrink: 0; }
+.sidebar-brand-name { font-size: 0.9rem; font-weight: 700; line-height: 1.2; }
+.sidebar-brand-sub { font-size: 0.65rem; opacity: 0.5; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; }
+.sidebar-section { padding: 1.25rem 0.75rem 0.5rem; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); }
+.sidebar-nav { padding: 0.25rem 0.75rem; display: flex; flex-direction: column; gap: 0.15rem; }
+.nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.85rem; border-radius: 9px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: background 0.15s, color 0.15s; cursor: pointer; border: none; background: none; font-family: 'Inter', sans-serif; width: 100%; text-align: left; }
+.nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: var(--white); }
+.nav-item-icon { width: 20px; text-align: center; font-size: 1rem; flex-shrink: 0; }
+.nav-badge { margin-left: auto; background: var(--amber); color: var(--white); font-size: 0.68rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 999px; min-width: 20px; text-align: center; }
+.nav-badge.blue { background: var(--blue); }
+.nav-badge.red { background: var(--red); }
+.sidebar-footer { padding: 1rem 0.75rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 0.5rem; margin-top: auto; }
+.sidebar-user { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.85rem; }
+.sidebar-avatar { width: 30px; height: 30px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; }
+.sidebar-username { font-size: 0.85rem; color: rgba(255,255,255,0.75); }
+.btn-logout { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.85rem; border-radius: 9px; color: rgba(255,255,255,0.45); font-size: 0.85rem; font-weight: 500; background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif; transition: color 0.15s, background 0.15s; text-align: left; width: 100%; }
+.btn-logout:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); }
+
+/* ── Main ── */
+.main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+.topbar-title { font-size: 1.2rem; font-weight: 700; color: var(--navy); }
+.topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+.topbar-date { font-size: 0.825rem; color: var(--muted); }
+.content { padding: 2rem; max-width: 1100px; width: 100%; }
+
+/* ── Panels ── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── Stats ── */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.stat-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.3rem; position: relative; overflow: hidden; }
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--stat-color, var(--blue)); border-radius: 14px 14px 0 0; }
+.stat-card.amber  { --stat-color: var(--amber); }
+.stat-card.red    { --stat-color: var(--red); }
+.stat-card.green  { --stat-color: var(--green); }
+.stat-icon { font-size: 1.4rem; margin-bottom: 0.25rem; }
+.stat-value { font-size: 2rem; font-weight: 700; color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums; }
+.stat-label { font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+
+/* ── Section headers ── */
+.section-header { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; margin-bottom: 1rem; }
+.section-header-left { display: flex; align-items: baseline; gap: 0.5rem; }
+.section-title { font-size: 1.15rem; font-weight: 700; color: var(--navy); }
+.section-sub { font-size: 0.78rem; color: var(--muted); }
+
+/* ── Agent status grid ── */
+.agent-status-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.75rem; margin-bottom: 2rem; }
+.agent-status-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; padding: 1rem 1.1rem; cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
+.agent-status-card:hover { border-color: var(--blue); transform: translateY(-1px); }
+.agent-status-card.status-ok      { border-top: 3px solid var(--green); }
+.agent-status-card.status-warning { border-top: 3px solid var(--amber); }
+.agent-status-card.status-error   { border-top: 3px solid var(--red); }
+.agent-status-card.status-never_run, .agent-status-card.status-empty { border-top: 3px solid #ccc; }
+.asc-icon  { font-size: 1.4rem; margin-bottom: 0.4rem; }
+.asc-name  { font-size: 0.78rem; font-weight: 700; color: var(--ink); }
+.asc-status { font-size: 0.7rem; margin-top: 0.2rem; }
+.asc-status.ok      { color: var(--green); }
+.asc-status.warning { color: var(--amber); }
+.asc-status.error   { color: var(--red); }
+.asc-status.never_run, .asc-status.empty { color: var(--muted); }
+.asc-meta { font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.4; }
+
+/* ── Agent panel chrome ── */
+.agent-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+.agent-panel-title { font-size: 1.4rem; font-weight: 700; color: var(--navy); }
+.agent-panel-meta { font-size: 0.825rem; color: var(--muted); margin-top: 0.2rem; }
+.agent-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.1rem; border-radius: 9px; border: none; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+.agent-btn.primary   { background: var(--navy); color: white; }
+.agent-btn.primary:hover { background: var(--navy-mid); }
+.agent-btn.secondary { background: var(--blue-ghost); color: var(--navy); }
+.agent-btn.secondary:hover { background: var(--blue-pale); }
+.agent-btn.amber     { background: var(--amber-pale); color: #7a4d00; }
+.agent-btn.amber:hover { background: #f5e0b0; }
+.agent-btn.red       { background: var(--red-pale); color: var(--red); }
+
+/* ── Module tiles ── */
+.modules-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.module-tile { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; padding: 1.5rem 1.75rem; display: flex; flex-direction: column; gap: 0.75rem; text-decoration: none; color: var(--ink); transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; position: relative; overflow: hidden; cursor: pointer; }
+.module-tile:hover { border-color: var(--tile-accent, var(--blue)); box-shadow: 0 8px 32px rgba(31,56,100,0.1); transform: translateY(-2px); }
+.module-tile::after { content: '→'; position: absolute; bottom: 1.25rem; right: 1.5rem; font-size: 1.1rem; color: var(--tile-accent, var(--blue)); opacity: 0; transition: opacity 0.2s, right 0.2s; }
+.module-tile:hover::after { opacity: 1; right: 1.25rem; }
+.tile-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--tile-bg, var(--blue-ghost)); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+.tile-label { font-weight: 700; font-size: 0.95rem; color: var(--ink); }
+.tile-desc { font-size: 0.825rem; color: var(--muted); line-height: 1.5; }
+.tile-badge { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 999px; background: var(--tile-badge-bg, var(--blue-ghost)); color: var(--tile-badge-color, var(--navy-mid)); width: fit-content; }
+
+/* ── Attention panel ── */
+.attention-panel { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 2rem; }
+.attention-header { background: var(--blue-ghost); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.6rem; border-bottom: 1px solid var(--border); }
+.attention-header-title { font-weight: 600; font-size: 0.9rem; color: var(--navy); }
+.attention-list { list-style: none; }
+.attention-item { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); font-size: 0.875rem; }
+.attention-item:last-child { border-bottom: none; }
+.attention-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
+.attention-dot.red   { background: var(--red); }
+.attention-dot.green { background: var(--green); }
+.attention-dot.blue  { background: var(--blue); }
+.attention-text { flex: 1; color: var(--ink); }
+.attention-action { font-size: 0.78rem; color: var(--blue); font-weight: 600; text-decoration: none; cursor: pointer; white-space: nowrap; border: none; background: none; font-family: 'Inter', sans-serif; }
+.attention-action:hover { text-decoration: underline; }
+.attention-empty { padding: 1.5rem; text-align: center; color: var(--muted); font-size: 0.875rem; }
+
+/* ── Content cards ── */
+.content-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+.content-card-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem; }
+.content-card-score { min-width: 48px; height: 48px; background: var(--blue-ghost); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; color: var(--navy); flex-shrink: 0; flex-direction: column; line-height: 1.1; text-align: center; }
+.content-card-title { font-weight: 600; font-size: 0.925rem; color: var(--ink); line-height: 1.4; }
+.content-card-meta { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+.content-card-actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+
+/* ── Opportunity cards ── */
+.opp-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+.opp-card.rate-gap { border-left: 4px solid var(--amber); }
+.opp-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+.opp-title { font-weight: 700; font-size: 0.95rem; color: var(--ink); }
+.opp-org   { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; }
+.score-badge { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; font-size: 0.9rem; font-weight: 700; flex-shrink: 0; }
+.score-badge.high   { background: var(--green-pale); color: var(--green); }
+.score-badge.mid    { background: var(--blue-ghost); color: var(--navy); }
+.score-badge.low    { background: var(--amber-pale); color: var(--amber); }
+.opp-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+.opp-tag { font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; }
+.opp-tag.rate     { background: var(--green-pale); color: var(--green); }
+.opp-tag.rate-low { background: var(--amber-pale); color: #7a4d00; }
+.opp-tag.sector   { background: var(--blue-ghost); color: var(--navy-mid); }
+.opp-tag.ir35     { background: var(--green-pale); color: var(--green); }
+.opp-tag.inside   { background: var(--red-pale); color: var(--red); }
+.rate-gap-note { background: var(--amber-pale); border-left: 3px solid var(--amber); border-radius: 0 8px 8px 0; padding: 0.6rem 0.9rem; font-size: 0.825rem; color: #5a3800; margin-bottom: 0.75rem; font-weight: 500; }
+
+/* ── Contact pipeline ── */
+.contact-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.1rem 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 1rem; }
+.contact-card.overdue { border-left: 4px solid var(--red); }
+.contact-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--navy); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700; flex-shrink: 0; }
+.contact-info { flex: 1; }
+.contact-name  { font-weight: 700; font-size: 0.9rem; color: var(--ink); }
+.contact-role  { font-size: 0.78rem; color: var(--muted); }
+.contact-org   { font-size: 0.78rem; color: var(--muted); }
+.status-pill { font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.65rem; border-radius: 999px; white-space: nowrap; }
+.status-pill.not_contacted  { background: var(--blue-ghost); color: var(--navy-mid); }
+.status-pill.emailed        { background: var(--blue-pale); color: var(--navy); }
+.status-pill.followed_up    { background: var(--amber-pale); color: #7a4d00; }
+.status-pill.responded      { background: var(--green-pale); color: var(--green); }
+.status-pill.meeting        { background: var(--green-pale); color: var(--green); font-weight: 700; }
+.overdue-flag { font-size: 0.72rem; color: var(--red); font-weight: 600; white-space: nowrap; }
+
+/* ── CV library cards ── */
+.cv-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.1rem 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 1rem; }
+.cv-icon { font-size: 1.5rem; flex-shrink: 0; }
+.cv-info { flex: 1; }
+.cv-title { font-weight: 700; font-size: 0.9rem; color: var(--ink); }
+.cv-meta  { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+.cv-type-badge { font-size: 0.7rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 999px; }
+.cv-type-badge.ats     { background: var(--blue-ghost); color: var(--navy-mid); }
+.cv-type-badge.premium { background: var(--blue-pale); color: var(--navy); }
+
+/* ── Vitals ── */
+.vitals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.vital-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.vital-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.5rem; }
+.vital-value { font-size: 1.1rem; font-weight: 700; color: var(--ink); }
+.vital-sub   { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+
+/* ── Spinner / toast / empty ── */
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; padding: 0.9rem 1.5rem; border-radius: 10px; font-weight: 600; font-size: 0.875rem; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; }
+.toast.success { background: var(--navy); color: white; }
+.toast.error   { background: var(--red); color: white; }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+.empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.empty-state p { font-size: 0.875rem; }
+
+@media (max-width: 900px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { display: none; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .modules-grid, .vitals-grid { grid-template-columns: 1fr; }
+  .agent-status-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ═══════════════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-monogram">DA</div>
+    <div class="login-title">Admin Hub</div>
+    <div class="login-sub">Didi Anolue Consulting — Back Office</div>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="usernameInput" placeholder="admin" autocomplete="username"
+             onkeypress="if(event.key==='Enter') document.getElementById('passwordInput').focus()">
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password"
+             onkeypress="if(event.key==='Enter') hubLogin()">
+    </div>
+    <button class="login-btn" onclick="hubLogin()">Sign In</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ══ HUB APP ══════════════════════════════════════════════════ -->
+<div id="hubApp">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">DA</div>
+      <div>
+        <div class="sidebar-brand-name">Didi Anolue</div>
+        <div class="sidebar-brand-sub">Admin Hub</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">Overview</div>
+    <div class="sidebar-nav">
+      <button class="nav-item active" onclick="showPanel('overview', this)">
+        <span class="nav-item-icon">📊</span> Dashboard
+      </button>
+    </div>
+
+    <div class="sidebar-section">Pipeline</div>
+    <div class="sidebar-nav">
+      <button class="nav-item" onclick="showPanel('opportunities', this)">
+        <span class="nav-item-icon">🔍</span> Opportunities
+        <span class="nav-badge blue" id="navBadgeOpps" style="display:none;"></span>
+      </button>
+      <button class="nav-item" onclick="showPanel('outreach', this)">
+        <span class="nav-item-icon">📧</span> Outreach
+        <span class="nav-badge red" id="navBadgeOutreach" style="display:none;"></span>
+      </button>
+      <button class="nav-item" onclick="showPanel('cvlibrary', this)">
+        <span class="nav-item-icon">📄</span> CV Library
+        <span class="nav-badge blue" id="navBadgeCv" style="display:none;"></span>
+      </button>
+      <button class="nav-item" onclick="showPanel('packages', this)">
+        <span class="nav-item-icon">📦</span> Applications
+        <span class="nav-badge blue" id="navBadgePackages" style="display:none;"></span>
+      </button>
+      <button class="nav-item" onclick="showPanel('enquiry', this)">
+        <span class="nav-item-icon">📨</span> Enquiries
+        <span class="nav-badge red" id="navBadgeEnquiry" style="display:none;"></span>
+      </button>
+    </div>
+
+    <div class="sidebar-section">Content</div>
+    <div class="sidebar-nav">
+      <button class="nav-item" onclick="showPanel('curator', this)">
+        <span class="nav-item-icon">🎯</span> Curator
+        <span class="nav-badge blue" id="navBadgeCurator" style="display:none;"></span>
+      </button>
+      <button class="nav-item" onclick="showPanel('newsletter', this)">
+        <span class="nav-item-icon">📰</span> Newsletter
+        <span class="nav-badge blue" id="navBadgeNewsletter" style="display:none;"></span>
+      </button>
+      <button class="nav-item" onclick="showPanel('repurpose', this)">
+        <span class="nav-item-icon">♻️</span> Repurpose
+        <span class="nav-badge blue" id="navBadgeRepurpose" style="display:none;"></span>
+      </button>
+      <a class="nav-item" href="/social-agent.html">
+        <span class="nav-item-icon">📱</span> Social
+      </a>
+    </div>
+
+    <div class="sidebar-section">Site</div>
+    <div class="sidebar-nav">
+      <button class="nav-item" onclick="showPanel('seo', this)">
+        <span class="nav-item-icon">🔎</span> SEO Gaps
+        <span class="nav-badge blue" id="navBadgeSeo" style="display:none;"></span>
+      </button>
+      <button class="nav-item" onclick="showPanel('health', this)">
+        <span class="nav-item-icon">🏥</span> Site Health
+        <span class="nav-badge red" id="navBadgeHealth" style="display:none;"></span>
+      </button>
+    </div>
+
+    <div class="sidebar-section">Site</div>
+    <div class="sidebar-nav">
+      <a class="nav-item" href="https://didianolue.co.uk" target="_blank">
+        <span class="nav-item-icon">🌐</span> View Site
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar">D</div>
+        <div class="sidebar-username" id="sidebarUsername">admin</div>
+      </div>
+      <button class="btn-logout" onclick="logout()"><span>↩</span> Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-actions">
+        <div class="topbar-date" id="topbarDate"></div>
+        <button class="agent-btn secondary" onclick="loadAgentData(true)">↺ Refresh</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ OVERVIEW ══ -->
+      <div class="panel active" id="panel-overview">
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">🔍</div>
+            <div class="stat-value" id="statOpps"><span class="spinner"></span></div>
+            <div class="stat-label">Active Opportunities</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-icon">📦</div>
+            <div class="stat-value" id="statApps"><span class="spinner"></span></div>
+            <div class="stat-label">Applications in Progress</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-icon">⏰</div>
+            <div class="stat-value" id="statOverdue"><span class="spinner"></span></div>
+            <div class="stat-label">Follow-ups Overdue</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon">💷</div>
+            <div class="stat-value">£800–1k</div>
+            <div class="stat-label">Target Day Rate</div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-header-left">
+            <div class="section-title">Agent Status</div>
+            <div class="section-sub">Click to view details</div>
+          </div>
+          <button class="agent-btn secondary" onclick="loadAgentData(true)">↺ Refresh</button>
+        </div>
+        <div class="agent-status-grid" id="agentStatusGrid">
+          <div class="agent-status-card"><div class="spinner"></div></div>
+          <div class="agent-status-card"><div class="spinner"></div></div>
+          <div class="agent-status-card"><div class="spinner"></div></div>
+          <div class="agent-status-card"><div class="spinner"></div></div>
+          <div class="agent-status-card"><div class="spinner"></div></div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-header-left">
+            <div class="section-title">Needs Attention</div>
+            <div class="section-sub" id="attentionSub">Loading…</div>
+          </div>
+        </div>
+        <div class="attention-panel">
+          <div class="attention-header">
+            <span>🔔</span>
+            <span class="attention-header-title">Action Required</span>
+          </div>
+          <div class="attention-empty" id="attentionLoading"><span class="spinner"></span> Checking…</div>
+          <ul class="attention-list" id="attentionList" style="display:none;"></ul>
+        </div>
+
+        <div class="section-header">
+          <div class="section-header-left"><div class="section-title">Tools</div></div>
+        </div>
+        <div class="modules-grid">
+          <a class="module-tile" href="/social-agent.html" style="--tile-accent:#2E5FA3; --tile-bg:#EBF2FB;">
+            <div class="tile-icon">📱</div>
+            <div class="tile-label">Social Command Centre</div>
+            <div class="tile-desc">Draft and schedule LinkedIn, Facebook, and Instagram posts. 5 posts per week, AI-generated from your theme.</div>
+            <div class="tile-badge" style="--tile-badge-bg:#EBF2FB; --tile-badge-color:#1F3864;">5 posts / week</div>
+          </a>
+          <button class="module-tile" onclick="showPanel('opportunities', null)" style="--tile-accent:#2F7A4E; --tile-bg:#D4EDDF;">
+            <div class="tile-icon">🔍</div>
+            <div class="tile-label">Opportunity Scout</div>
+            <div class="tile-desc">Find and score interim procurement and commercial roles. Scored /10 by rate, PA2023 relevance, and sector fit.</div>
+            <div class="tile-badge" id="oppTileBadge" style="--tile-badge-bg:#D4EDDF; --tile-badge-color:#2F7A4E;">Loading…</div>
+          </button>
+          <button class="module-tile" onclick="showPanel('outreach', null)" style="--tile-accent:#D4860A; --tile-bg:#FEF3DC;">
+            <div class="tile-icon">📧</div>
+            <div class="tile-label">Outreach Pipeline</div>
+            <div class="tile-desc">Track contacts, flag overdue follow-ups, and get next 5 priority targets. Positioned as a consultant, not a job-seeker.</div>
+            <div class="tile-badge" id="outreachTileBadge" style="--tile-badge-bg:#FEF3DC; --tile-badge-color:#8B5A02;">Loading…</div>
+          </button>
+          <button class="module-tile" onclick="showPanel('packages', null)" style="--tile-accent:#1F3864; --tile-bg:#EBF2FB;">
+            <div class="tile-icon">📦</div>
+            <div class="tile-label">Application Packages</div>
+            <div class="tile-desc">Build complete application packages: tailored CV, Impact Brief, two CAR examples, and rate positioning note.</div>
+            <div class="tile-badge" id="packageTileBadge" style="--tile-badge-bg:#EBF2FB; --tile-badge-color:#2E5FA3;">Loading…</div>
+          </button>
+        </div>
+
+        <div class="section-header">
+          <div class="section-header-left">
+            <div class="section-title">Pipeline Summary</div>
+            <div class="section-sub">Current outreach and application status</div>
+          </div>
+        </div>
+        <div class="vitals-grid">
+          <div class="vital-card">
+            <div class="vital-label">Contacts in Pipeline</div>
+            <div class="vital-value" id="vitalContacts">—</div>
+            <div class="vital-sub">Total across all sectors</div>
+          </div>
+          <div class="vital-card">
+            <div class="vital-label">Meetings Booked</div>
+            <div class="vital-value" id="vitalMeetings">—</div>
+            <div class="vital-sub">From outreach campaign</div>
+          </div>
+          <div class="vital-card">
+            <div class="vital-label">CVs Tailored</div>
+            <div class="vital-value" id="vitalCvs">—</div>
+            <div class="vital-sub">This month</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ OPPORTUNITIES PANEL ══ -->
+      <div class="panel" id="panel-opportunities">
+        <div class="agent-panel-header">
+          <div>
+            <div class="agent-panel-title">🔍 Opportunity Scout</div>
+            <div class="agent-panel-meta" id="oppsMeta">Scores roles /10 by rate, PA2023 relevance, sector fit, contract length, and IR35 status</div>
+          </div>
+        </div>
+        <div id="oppsContent"><div class="empty-state"><div class="spinner"></div><p>Loading…</p></div></div>
+      </div>
+
+      <!-- ══ OUTREACH PANEL ══ -->
+      <div class="panel" id="panel-outreach">
+        <div class="agent-panel-header">
+          <div>
+            <div class="agent-panel-title">📧 Outreach Pipeline</div>
+            <div class="agent-panel-meta">Contacts overdue for follow-up (7+ days) are flagged in red</div>
+          </div>
+        </div>
+        <div id="outreachContent"><div class="empty-state"><div class="spinner"></div><p>Loading…</p></div></div>
+      </div>
+
+      <!-- ══ CV LIBRARY PANEL ══ -->
+      <div class="panel" id="panel-cvlibrary">
+        <div class="agent-panel-header">
+          <div>
+            <div class="agent-panel-title">📄 CV Library</div>
+            <div class="agent-panel-meta">ATS and premium versions tailored per role. Source: shared/cv-library/master-cv.md</div>
+          </div>
+        </div>
+        <div id="cvContent"><div class="empty-state"><div class="spinner"></div><p>Loading…</p></div></div>
+      </div>
+
+      <!-- ══ APPLICATION PACKAGES PANEL ══ -->
+      <div class="panel" id="panel-packages">
+        <div class="agent-panel-header">
+          <div>
+            <div class="agent-panel-title">📦 Application Packages</div>
+            <div class="agent-panel-meta">Each package: tailored CV + Impact Brief + 2 CAR examples + rate positioning note</div>
+          </div>
+        </div>
+        <div id="packagesContent"><div class="empty-state"><div class="spinner"></div><p>Loading…</p></div></div>
+      </div>
+
+      <!-- ══ ENQUIRY PANEL ══ -->
+      <div class="panel" id="panel-enquiry">
+        <div class="agent-panel-header">
+          <div>
+            <div class="agent-panel-title">📨 Enquiry Agent</div>
+            <div class="agent-panel-meta" id="enquiryMeta">Processes inbound enquiries — categorises, prioritises, and drafts responses in Didi's voice</div>
+          </div>
+        </div>
+        <div id="enquiryContent"><div class="empty-state"><div class="spinner"></div><p>Loading…</p></div></div>
+      </div>
+
+      <!-- ══ CONTENT CURATOR PANEL ══ -->
+      <div class="panel" id="panel-curator">
+        <div class="agent-panel-header">
+          <div>
+            <div class="agent-panel-title">🎯 Content Curator</div>
+            <div class="agent-panel-meta" id="curatorMeta">Scores procurement and commercial news articles for LinkedIn and newsletter use</div>
+          </div>
+        </div>
+        <div id="curatorContent"><div class="empty-state"><div class="spinner"></div><p>Loading…</p></div></div>
+      </div>
+
+      <!-- ══ NEWSLETTER PANEL ══ -->
+      <div class="panel" id="panel-newsletter">
+        <div class="agent-panel-header">
+          <div>
+            <div class="agent-panel-title">📰 Newsletter — The Commercial Clarity Briefing</div>
+            <div class="agent-panel-meta">Weekly draft: insight + PA2023 watch + from the field + quick wins + reading list</div>
+          </div>
+        </div>
+        <div id="newsletterContent"><div class="empty-state"><div class="spinner"></div><p>Loading…</p></div></div>
+      </div>
+
+      <!-- ══ REPURPOSE PANEL ══ -->
+      <div class="panel" id="panel-repurpose">
+        <div class="agent-panel-header">
+          <div>
+            <div class="agent-panel-title">♻️ Content Repurposing</div>
+            <div class="agent-panel-meta">Turns blog posts, CAR examples, and articles into LinkedIn posts, threads, email snippets, and pull quotes</div>
+          </div>
+        </div>
+        <div id="repurposeContent"><div class="empty-state"><div class="spinner"></div><p>Loading…</p></div></div>
+      </div>
+
+      <!-- ══ SEO GAPS PANEL ══ -->
+      <div class="panel" id="panel-seo">
+        <div class="agent-panel-header">
+          <div>
+            <div class="agent-panel-title">🔎 SEO Gap Finder</div>
+            <div class="agent-panel-meta" id="seoMeta">Audits didianolue.co.uk against target procurement keywords and generates article briefs</div>
+          </div>
+        </div>
+        <div id="seoContent"><div class="empty-state"><div class="spinner"></div><p>Loading…</p></div></div>
+      </div>
+
+      <!-- ══ SITE HEALTH PANEL ══ -->
+      <div class="panel" id="panel-health">
+        <div class="agent-panel-header">
+          <div>
+            <div class="agent-panel-title">🏥 Site Health Monitor</div>
+            <div class="agent-panel-meta" id="healthMeta">Checks all pages and API endpoints on didianolue.co.uk</div>
+          </div>
+        </div>
+        <div id="healthContent"><div class="empty-state"><div class="spinner"></div><p>Loading…</p></div></div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /hubApp -->
+
+<script>
+// ══ CONFIG ════════════════════════════════════════════════════
+const ADMIN_PASSWORD_HASH = '924325fbd85f063f2439544a4bd4cbe61433c2c83eb3e5a7ead42b984b7a2223';
+
+let _agentData = null;
+let _currentPanel = 'overview';
+
+// ══ AUTH ══════════════════════════════════════════════════════
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function hubLogin() {
+  const username = document.getElementById('usernameInput').value.trim();
+  const password = document.getElementById('passwordInput').value;
+  const errEl = document.getElementById('loginError');
+  errEl.classList.remove('show');
+
+  if (!username) { errEl.textContent = 'Please enter your username.'; errEl.classList.add('show'); return; }
+  if (username.toLowerCase() !== 'admin') { errEl.textContent = 'Username not recognised.'; errEl.classList.add('show'); return; }
+  if (!password) { errEl.textContent = 'Please enter your password.'; errEl.classList.add('show'); return; }
+
+  const hash = await sha256(password);
+  if (hash === ADMIN_PASSWORD_HASH) {
+    sessionStorage.setItem('adminAuth', 'true');
+    sessionStorage.setItem('adminPassword', password);
+    sessionStorage.setItem('adminUser', username);
+    showDashboard(username);
+  } else {
+    errEl.textContent = 'Incorrect password. Please try again.';
+    errEl.classList.add('show');
+    document.getElementById('passwordInput').value = '';
+  }
+}
+
+function logout() { sessionStorage.clear(); location.reload(); }
+
+function showDashboard(username) {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('hubApp').classList.add('visible');
+  const user = username || sessionStorage.getItem('adminUser') || 'admin';
+  document.getElementById('sidebarUsername').textContent = user;
+  document.getElementById('sidebarAvatar').textContent = user[0].toUpperCase();
+  document.getElementById('topbarDate').textContent = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  loadAgentData(false);
+}
+
+if (sessionStorage.getItem('adminAuth') === 'true') showDashboard();
+
+// ══ PANEL ROUTING ══════════════════════════════════════════════
+const PANEL_TITLES = {
+  overview: 'Dashboard', opportunities: 'Opportunity Scout',
+  outreach: 'Outreach Pipeline', cvlibrary: 'CV Library', packages: 'Application Packages',
+  enquiry: 'Enquiries', curator: 'Content Curator', newsletter: 'Newsletter',
+  repurpose: 'Content Repurposing', seo: 'SEO Gaps', health: 'Site Health'
+};
+
+function showPanel(name, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('topbarTitle').textContent = PANEL_TITLES[name] || name;
+  _currentPanel = name;
+  if (_agentData) renderPanel(name, _agentData);
+}
+
+// ══ AGENT DATA ═════════════════════════════════════════════════
+async function loadAgentData(forceRefresh) {
+  if (_agentData && !forceRefresh) { renderAgentOverview(_agentData); return; }
+  const files = ['scout','outreach','cv-tailor','packages','social','curator','newsletter','repurpose','seo','health','enquiry'];
+  const keys  = ['scout','outreach','cvTailor','packages','social','curator','newsletter','repurpose','seo','health','enquiry'];
+  try {
+    const results = await Promise.all(
+      files.map(f => fetch(`/data/agent-summaries/${f}.json?t=${Date.now()}`)
+        .then(r => r.ok ? r.json() : { status: 'never_run' })
+        .catch(() => ({ status: 'never_run' }))
+      )
+    );
+    _agentData = Object.fromEntries(keys.map((k, i) => [k, results[i]]));
+    renderAgentOverview(_agentData);
+    buildAttentionPanel(_agentData);
+    if (_currentPanel !== 'overview') renderPanel(_currentPanel, _agentData);
+  } catch (err) {
+    console.warn('Could not load agent summaries:', err.message);
+    renderAgentFallback();
+  }
+}
+
+const STATUS_LABELS = { ok: 'All good', warning: 'Attention needed', error: 'Issue detected', never_run: 'Not yet run', empty: 'No data' };
+
+function renderAgentOverview(data) {
+  const agents = [
+    { key: 'scout',     icon: '🔍', name: 'Opp Scout',   panel: 'opportunities', meta: d => d.count ? `${d.count} roles` : 'Not run' },
+    { key: 'outreach',  icon: '📧', name: 'Outreach',     panel: 'outreach',      meta: d => d.overdue ? `${d.overdue} overdue` : 'Not run' },
+    { key: 'cvTailor',  icon: '📄', name: 'CV Tailor',    panel: 'cvlibrary',     meta: d => d.count ? `${d.count} CVs` : 'Not run' },
+    { key: 'packages',  icon: '📦', name: 'Applications', panel: 'packages',      meta: d => d.count ? `${d.count} built` : 'Not run' },
+    { key: 'enquiry',   icon: '📨', name: 'Enquiries',    panel: 'enquiry',       meta: d => d.unread ? `${d.unread} unread` : 'Not run' },
+    { key: 'curator',   icon: '🎯', name: 'Curator',      panel: 'curator',       meta: d => d.stats?.topPicks ? `${d.stats.topPicks} picks` : 'Not run' },
+    { key: 'newsletter',icon: '📰', name: 'Newsletter',   panel: 'newsletter',    meta: d => d.latestDate ? `Draft: ${d.latestDate}` : 'Not run' },
+    { key: 'repurpose', icon: '♻️', name: 'Repurpose',    panel: 'repurpose',     meta: d => d.count ? `${d.count} done` : 'Not run' },
+    { key: 'seo',       icon: '🔎', name: 'SEO Gaps',     panel: 'seo',           meta: d => d.gaps?.length ? `${d.gaps.length} gaps` : 'Not run' },
+    { key: 'health',    icon: '🏥', name: 'Site Health',  panel: 'health',        meta: d => d.date ? `${d.pagesOk}/${d.pages?.length||0} OK` : 'Not run' },
+    { key: 'social',    icon: '📱', name: 'Social',       panel: null,            meta: d => d.scheduled ? `${d.scheduled} scheduled` : 'Not run' },
+  ];
+
+  setText('statOpps',    data.scout?.count ?? '—');
+  setText('statApps',    data.packages?.count ?? '—');
+  setText('statOverdue', data.outreach?.overdue ?? '—');
+  setText('vitalContacts', data.outreach?.total ?? '—');
+  setText('vitalMeetings', data.outreach?.meetings ?? '—');
+  setText('vitalCvs',    data.cvTailor?.count ?? '—');
+
+  setText('oppTileBadge',      data.scout?.count ? data.scout.count + ' opportunities' : 'Run scout');
+  setText('outreachTileBadge', data.outreach?.overdue ? data.outreach.overdue + ' follow-ups due' : 'Up to date');
+  setText('packageTileBadge',  data.packages?.count ? data.packages.count + ' packages' : 'None yet');
+
+  const grid = document.getElementById('agentStatusGrid');
+  grid.innerHTML = agents.map(a => {
+    const d = data[a.key] || { status: 'never_run' };
+    const st = d.status || 'never_run';
+    const click = a.panel ? `onclick="showPanel('${a.panel}', null)"` : `onclick="window.location='/social-agent.html'"`;
+    return `<div class="agent-status-card status-${st}" ${click}>
+      <div class="asc-icon">${a.icon}</div>
+      <div class="asc-name">${a.name}</div>
+      <div class="asc-status ${st}">${STATUS_LABELS[st]}</div>
+      <div class="asc-meta">${a.meta(d)}</div>
+    </div>`;
+  }).join('');
+
+  updateNavBadge('navBadgeOpps',      data.scout?.count > 0 ? data.scout.count : null);
+  updateNavBadge('navBadgeOutreach',  data.outreach?.overdue > 0 ? data.outreach.overdue : null);
+  updateNavBadge('navBadgeCv',        data.cvTailor?.count > 0 ? data.cvTailor.count : null);
+  updateNavBadge('navBadgePackages',  data.packages?.count > 0 ? data.packages.count : null);
+  updateNavBadge('navBadgeEnquiry',   data.enquiry?.unread > 0 ? data.enquiry.unread : null);
+  updateNavBadge('navBadgeCurator',   data.curator?.stats?.topPicks > 0 ? data.curator.stats.topPicks : null);
+  updateNavBadge('navBadgeNewsletter',data.newsletter?.drafts?.length > 0 ? data.newsletter.drafts.length : null);
+  updateNavBadge('navBadgeRepurpose', data.repurpose?.count > 0 ? data.repurpose.count : null);
+  updateNavBadge('navBadgeSeo',       data.seo?.gaps?.length > 0 ? data.seo.gaps.length : null);
+  updateNavBadge('navBadgeHealth',    data.health?.criticalDown?.length > 0 ? '!' : (data.health?.warnings > 0 ? data.health.warnings : null));
+}
+
+function updateNavBadge(id, value, cls) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (value) { el.textContent = value; el.style.display = 'inline-flex'; if (cls) el.classList.add(cls); }
+  else { el.style.display = 'none'; }
+}
+
+function renderAgentFallback() {
+  ['statOpps','statApps','statOverdue'].forEach(id => setText(id, '—'));
+  ['oppTileBadge','outreachTileBadge','packageTileBadge'].forEach(id => setText(id, '—'));
+  document.getElementById('agentStatusGrid').innerHTML = `
+    <div class="agent-status-card" style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:0.85rem;padding:1.5rem">
+      Agent data not yet available — run the agents and deploy <code>/api/agent-data</code> to populate this dashboard.
+    </div>`;
+  document.getElementById('attentionLoading').innerHTML = '⚙️ Agents not yet run. Use the CLI commands in USAGE.md to get started.';
+  document.getElementById('attentionSub').textContent = 'Pending setup';
+}
+
+function buildAttentionPanel(data) {
+  const items = [];
+  if ((data.outreach?.overdue ?? 0) > 0)
+    items.push({ dot: 'red',   text: `${data.outreach.overdue} contact${data.outreach.overdue > 1 ? 's' : ''} overdue for follow-up (7+ days)`, action: 'View →', panel: 'outreach' });
+  if ((data.scout?.rateGaps ?? 0) > 0)
+    items.push({ dot: 'amber', text: `${data.scout.rateGaps} opportunity${data.scout.rateGaps > 1 ? 'ies' : 'y'} with rate below £800 target`, action: 'Review →', panel: 'opportunities' });
+  if ((data.scout?.expiring ?? 0) > 0)
+    items.push({ dot: 'amber', text: `${data.scout.expiring} opportunity${data.scout.expiring > 1 ? 'ies' : 'y'} with apply-by date within 3 days`, action: 'Apply →', panel: 'opportunities' });
+  if ((data.packages?.ready ?? 0) > 0)
+    items.push({ dot: 'blue',  text: `${data.packages.ready} application package${data.packages.ready > 1 ? 's' : ''} ready to submit`, action: 'View →', panel: 'packages' });
+  if ((data.enquiry?.unread ?? 0) > 0)
+    items.push({ dot: 'red',   text: `${data.enquiry.unread} unread enquir${data.enquiry.unread > 1 ? 'ies' : 'y'} waiting for response`, action: 'Review →', panel: 'enquiry' });
+  if ((data.curator?.stats?.topPicks ?? 0) > 0)
+    items.push({ dot: 'green', text: `${data.curator.stats.topPicks} curated articles ready for LinkedIn or newsletter`, action: 'Curate →', panel: 'curator' });
+  if (data.newsletter?.latestDate)
+    items.push({ dot: 'blue',  text: `Newsletter draft ready: week of ${data.newsletter.latestDate}`, action: 'Preview →', panel: 'newsletter' });
+  if (data.health?.criticalDown?.length > 0)
+    items.push({ dot: 'red',   text: `Critical: ${data.health.criticalDown.join(', ')} page${data.health.criticalDown.length > 1 ? 's' : ''} down`, action: 'Check →', panel: 'health' });
+  if ((data.seo?.gaps?.filter(g => g.urgent)?.length ?? 0) > 0)
+    items.push({ dot: 'amber', text: `${data.seo.gaps.filter(g => g.urgent).length} overdue SEO topic${data.seo.gaps.filter(g => g.urgent).length > 1 ? 's' : ''} — content briefs ready`, action: 'Plan →', panel: 'seo' });
+  if ((data.scout?.count ?? 0) > 0)
+    items.push({ dot: 'green', text: `${data.scout.count} scored opportunities available for review`, action: 'Scout →', panel: 'opportunities' });
+
+  const loading = document.getElementById('attentionLoading');
+  const list = document.getElementById('attentionList');
+  const sub = document.getElementById('attentionSub');
+
+  if (items.length === 0) {
+    loading.innerHTML = '✅ All clear — nothing needs attention right now.';
+    sub.textContent = 'All clear';
+    return;
+  }
+  sub.textContent = items.length + ' item' + (items.length > 1 ? 's' : '');
+  loading.style.display = 'none';
+  list.style.display = 'block';
+  list.innerHTML = items.map(i => `
+    <li class="attention-item">
+      <span class="attention-dot ${i.dot}"></span>
+      <span class="attention-text">${i.text}</span>
+      <button class="attention-action" onclick="showPanel('${i.panel}', null)">${i.action}</button>
+    </li>`).join('');
+}
+
+// ══ PANEL RENDERERS ════════════════════════════════════════════
+function renderPanel(name, data) {
+  const map = {
+    opportunities: renderOpps, outreach: renderOutreach,
+    cvlibrary: renderCvLibrary, packages: renderPackages,
+    enquiry: renderEnquiry, curator: renderCurator,
+    newsletter: renderNewsletter, repurpose: renderRepurpose,
+    seo: renderSeo, health: renderHealth
+  };
+  if (map[name]) map[name](data);
+}
+
+// ── Opportunities ─────────────────────────────────────────────
+function renderOpps(data) {
+  const el = document.getElementById('oppsContent');
+  const d = data.scout;
+  if (!d || d.status === 'never_run' || !d.opportunities?.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div>
+      <p>No opportunities scouted yet.<br><br>
+      Run: <code style="background:var(--blue-ghost);padding:0.2rem 0.5rem;border-radius:5px;font-family:monospace">cd agents/opportunity-scout<br>claude "Search for interim procurement and commercial roles matching Didi's profile. Score and rank them."</code></p></div>`;
+    return;
+  }
+  document.getElementById('oppsMeta').textContent = `Last run: ${d.date} · ${d.opportunities.length} roles scored`;
+  el.innerHTML = `
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap">
+      <div class="vital-card" style="flex:1"><div class="vital-label">Total Scored</div><div class="vital-value">${d.opportunities.length}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">Rate Match (≥£800)</div><div class="vital-value" style="color:var(--green)">${d.opportunities.filter(o => o.rateOk).length}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">Rate Gaps</div><div class="vital-value" style="color:var(--amber)">${d.rateGaps ?? 0}</div></div>
+    </div>
+    ${d.opportunities.map(o => {
+      const scoreClass = o.score >= 8 ? 'high' : o.score >= 5 ? 'mid' : 'low';
+      return `<div class="opp-card${o.rateGap ? ' rate-gap' : ''}">
+        <div class="opp-card-header">
+          <div>
+            <div class="opp-title">${escHtml(o.title)}</div>
+            <div class="opp-org">${escHtml(o.organisation)}</div>
+          </div>
+          <div class="score-badge ${scoreClass}">${o.score}/10</div>
+        </div>
+        ${o.rateGap ? `<div class="rate-gap-note">⚠️ RATE GAP: Advertised ${escHtml(o.rate)} vs target £800–£1,000</div>` : ''}
+        <div class="opp-meta">
+          <span class="opp-tag ${o.rateOk ? 'rate' : 'rate-low'}">${escHtml(o.rate)}</span>
+          <span class="opp-tag sector">${escHtml(o.sector)}</span>
+          ${o.outsideIR35 ? '<span class="opp-tag ir35">Outside IR35</span>' : '<span class="opp-tag inside">Inside IR35</span>'}
+          ${o.length ? `<span class="opp-tag sector">${escHtml(o.length)}</span>` : ''}
+        </div>
+        <div class="content-card-actions">
+          ${o.applyBy ? `<span style="font-size:0.78rem;color:var(--muted);align-self:center">Apply by: ${escHtml(o.applyBy)}</span>` : ''}
+          ${o.url ? `<a class="agent-btn primary" href="${escHtml(o.url)}" target="_blank">View role →</a>` : ''}
+          <button class="agent-btn secondary" onclick="buildPackage('${escAttr(o.title)}', '${escAttr(o.organisation)}')">Build package →</button>
+        </div>
+        ${o.notes ? `<div style="font-size:0.78rem;color:var(--muted);margin-top:0.5rem">${escHtml(o.notes)}</div>` : ''}
+      </div>`;
+    }).join('')}`;
+}
+
+function buildPackage(title, org) {
+  showToast(`Open agents/application-package and run: claude "Build a full application package for ${title} at ${org}"`, 'success');
+}
+
+// ── Outreach ──────────────────────────────────────────────────
+function renderOutreach(data) {
+  const el = document.getElementById('outreachContent');
+  const d = data.outreach;
+  if (!d || d.status === 'never_run' || !d.contacts?.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📧</div>
+      <p>No contacts in the pipeline yet.<br><br>Populate <code style="background:var(--blue-ghost);padding:0.2rem 0.5rem;border-radius:5px;font-family:monospace">shared/contact-database.csv</code> with your target contacts, then run the outreach agent.</p></div>`;
+    return;
+  }
+  const overdue = d.contacts.filter(c => c.overdue);
+  const priority = d.priority || [];
+  el.innerHTML = `
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap">
+      <div class="vital-card" style="flex:1"><div class="vital-label">Total Contacts</div><div class="vital-value">${d.total ?? d.contacts.length}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">Overdue (7+ days)</div><div class="vital-value" style="color:var(--red)">${overdue.length}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">Meetings</div><div class="vital-value" style="color:var(--green)">${d.meetings ?? 0}</div></div>
+    </div>
+    ${overdue.length > 0 ? `
+      <div class="section-header"><div class="section-header-left"><div class="section-title" style="font-size:1rem">Overdue Follow-ups</div></div></div>
+      ${overdue.map(c => renderContact(c)).join('')}` : ''}
+    ${priority.length > 0 ? `
+      <div class="section-header" style="margin-top:1rem"><div class="section-header-left"><div class="section-title" style="font-size:1rem">Next 5 Priority Targets</div></div></div>
+      ${priority.map(c => renderContact(c)).join('')}` : ''}
+    <div class="section-header" style="margin-top:1rem"><div class="section-header-left"><div class="section-title" style="font-size:1rem">All Contacts</div></div></div>
+    ${d.contacts.map(c => renderContact(c)).join('')}`;
+}
+
+function renderContact(c) {
+  const initials = ((c.firstName || '?')[0] + (c.lastName || '?')[0]).toUpperCase();
+  const statusClass = (c.status || 'not_contacted').toLowerCase().replace(' ', '_');
+  const statusLabel = (c.status || 'Not contacted').replace(/_/g, ' ');
+  return `<div class="contact-card${c.overdue ? ' overdue' : ''}">
+    <div class="contact-avatar">${initials}</div>
+    <div class="contact-info">
+      <div class="contact-name">${escHtml(c.firstName)} ${escHtml(c.lastName)}</div>
+      <div class="contact-role">${escHtml(c.jobTitle || '')} · ${escHtml(c.organisation || '')}</div>
+    </div>
+    <span class="status-pill ${statusClass}">${escHtml(statusLabel)}</span>
+    ${c.overdue ? `<span class="overdue-flag">⚠️ ${c.daysSince}d ago</span>` : ''}
+  </div>`;
+}
+
+// ── CV Library ────────────────────────────────────────────────
+function renderCvLibrary(data) {
+  const el = document.getElementById('cvContent');
+  const d = data.cvTailor;
+  if (!d || d.status === 'never_run' || !d.cvs?.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📄</div>
+      <p>No tailored CVs yet.<br><br>Run: <code style="background:var(--blue-ghost);padding:0.2rem 0.5rem;border-radius:5px;font-family:monospace">cd agents/cv-tailor<br>claude "Here is a job description: [paste JD]. Produce a tailored CV for Didi."</code></p></div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div style="margin-bottom:1.25rem;display:flex;gap:0.75rem;flex-wrap:wrap">
+      <div class="vital-card" style="flex:1"><div class="vital-label">Total CVs</div><div class="vital-value">${d.count ?? d.cvs.length}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">This Month</div><div class="vital-value">${d.thisMonth ?? '—'}</div></div>
+    </div>
+    ${d.cvs.map(cv => `
+      <div class="cv-card">
+        <div class="cv-icon">📄</div>
+        <div class="cv-info">
+          <div class="cv-title">${escHtml(cv.organisation)} — ${escHtml(cv.role)}</div>
+          <div class="cv-meta">${escHtml(cv.date)} · <span class="cv-type-badge ats">ATS</span> <span class="cv-type-badge premium">Premium</span></div>
+        </div>
+        ${cv.rateGap ? `<span style="font-size:0.72rem;color:var(--amber);font-weight:600">⚠️ Rate gap</span>` : ''}
+      </div>`).join('')}`;
+}
+
+// ── Packages ──────────────────────────────────────────────────
+function renderPackages(data) {
+  const el = document.getElementById('packagesContent');
+  const d = data.packages;
+  if (!d || d.status === 'never_run' || !d.packages?.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div>
+      <p>No application packages built yet.<br><br>Run: <code style="background:var(--blue-ghost);padding:0.2rem 0.5rem;border-radius:5px;font-family:monospace">cd agents/application-package<br>claude "Build a full application package for [role] at [org]: [paste JD]"</code></p></div>`;
+    return;
+  }
+  el.innerHTML = d.packages.map(p => `
+    <div class="content-card">
+      <div class="content-card-header">
+        <div class="content-card-score" style="background:var(--blue-ghost);color:var(--navy)">📦</div>
+        <div>
+          <div class="content-card-title">${escHtml(p.role)} — ${escHtml(p.organisation)}</div>
+          <div class="content-card-meta">Built ${escHtml(p.date)} · CV + Impact Brief + 2 CAR examples${p.rateNote ? ' + rate note' : ''}</div>
+        </div>
+      </div>
+      ${p.rateGap ? `<div class="rate-gap-note">⚠️ RATE GAP: Advertised ${escHtml(p.advertisedRate)} vs target £800–£1,000</div>` : ''}
+      <div class="content-card-actions">
+        <span style="font-size:0.78rem;color:var(--muted);align-self:center">outputs/application-package/${escHtml(p.folder)}</span>
+      </div>
+    </div>`).join('');
+}
+
+// ── Enquiry ───────────────────────────────────────────────────
+function renderEnquiry(data) {
+  const el = document.getElementById('enquiryContent');
+  const d = data.enquiry;
+  if (!d || d.status === 'never_run' || !d.enquiries?.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📨</div>
+      <p>No enquiries processed yet.<br><br>Drop enquiry files into <code style="background:var(--blue-ghost);padding:0.2rem 0.5rem;border-radius:5px;font-family:monospace">shared/enquiries/pending/</code> then run:<br><br>
+      <code style="background:var(--blue-ghost);padding:0.2rem 0.5rem;border-radius:5px;font-family:monospace">cd agents/enquiry<br>claude "Process any pending enquiries in shared/enquiries/pending/"</code></p></div>`;
+    return;
+  }
+  if (d.date) document.getElementById('enquiryMeta').textContent = `Last run: ${d.date} · ${d.total} total · ${d.unread} unread · ${d.highPriority} high priority`;
+  const unread = d.enquiries.filter(e => !e.responseDrafted);
+  el.innerHTML = `
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap">
+      <div class="vital-card" style="flex:1"><div class="vital-label">Total</div><div class="vital-value">${d.total ?? d.enquiries.length}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">Unread</div><div class="vital-value" style="color:${d.unread > 0 ? 'var(--red)' : 'var(--green)'}">${d.unread ?? 0}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">High Priority</div><div class="vital-value" style="color:var(--navy)">${d.highPriority ?? 0}</div></div>
+    </div>
+    ${unread.length > 0 ? `<div class="section-header"><div class="section-header-left"><div class="section-title" style="font-size:1rem">Awaiting Response</div></div></div>` : ''}
+    ${d.enquiries.map(e => `
+      <div class="content-card">
+        <div class="content-card-header">
+          <div class="content-card-score" style="background:${e.priority >= 7 ? 'var(--green-pale)' : e.priority >= 4 ? 'var(--blue-ghost)' : 'var(--amber-pale)'};color:${e.priority >= 7 ? 'var(--green)' : e.priority >= 4 ? 'var(--navy)' : 'var(--amber)'}">
+            ${e.priority}<div style="font-size:0.6rem">/10</div>
+          </div>
+          <div>
+            <div class="content-card-title">${escHtml(e.name)}${e.organisation ? ` — ${escHtml(e.organisation)}` : ''}</div>
+            <div class="content-card-meta">${escHtml(e.category)} · ${escHtml(e.date)} ${e.responseDrafted ? '· ✅ Response drafted' : '· ⏳ Awaiting draft'}</div>
+          </div>
+        </div>
+        <div style="font-size:0.85rem;color:var(--muted)">${escHtml(e.summary)}</div>
+        ${e.folder ? `<div style="font-size:0.75rem;color:var(--muted);margin-top:0.5rem">outputs/enquiry/${escHtml(e.folder)}</div>` : ''}
+      </div>`).join('')}`;
+}
+
+// ── Content Curator ────────────────────────────────────────────
+function renderCurator(data) {
+  const el = document.getElementById('curatorContent');
+  const d = data.curator;
+  if (!d || d.status === 'never_run' || !d.topPicks?.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🎯</div>
+      <p>No curator digest yet.<br><br>Run: <code style="background:var(--blue-ghost);padding:0.2rem 0.5rem;border-radius:5px;font-family:monospace">cd agents/content-curator<br>claude "Scan procurement and commercial news from the last 7 days. Score and surface the top picks."</code></p></div>`;
+    return;
+  }
+  if (d.date) document.getElementById('curatorMeta').textContent = `Last run: ${d.date} · ${d.stats.totalScanned} scanned · ${d.stats.topPicks} top picks · ${d.stats.linkedinCandidates} LinkedIn · ${d.stats.newsletterCandidates} newsletter`;
+  el.innerHTML = `
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap">
+      <div class="vital-card" style="flex:1"><div class="vital-label">Scanned</div><div class="vital-value">${d.stats.totalScanned}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">Top Picks</div><div class="vital-value" style="color:var(--green)">${d.stats.topPicks}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">LinkedIn</div><div class="vital-value" style="color:var(--navy)">${d.stats.linkedinCandidates}</div></div>
+    </div>
+    ${d.topPicks.map(a => `
+      <div class="content-card">
+        <div class="content-card-header">
+          <div class="content-card-score">${a.score}<div style="font-size:0.6rem">pts</div></div>
+          <div>
+            <div class="content-card-title">${escHtml(a.title)}</div>
+            <div class="content-card-meta">${escHtml(a.source)} · ${escHtml(a.suggestedUse)}</div>
+          </div>
+        </div>
+        ${a.editorialNote ? `<div style="background:var(--blue-ghost);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:0.6rem 0.9rem;font-size:0.85rem;color:var(--ink);margin-bottom:0.75rem"><strong style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--navy-mid);display:block;margin-bottom:0.25rem">Editorial note</strong>${escHtml(a.editorialNote)}</div>` : ''}
+        <div class="content-card-actions">
+          ${a.url ? `<a class="agent-btn primary" href="${escHtml(a.url)}" target="_blank">Read article →</a>` : ''}
+          <button class="agent-btn secondary" onclick="copyToClipboard('${escAttr(a.url)}', this)">Copy URL</button>
+        </div>
+      </div>`).join('')}
+    ${d.skipped?.length ? `<div style="margin-top:1.5rem"><div class="section-title" style="font-size:1rem;margin-bottom:0.75rem">Skipped (${d.skipped.length})</div>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      ${d.skipped.map(s => `<div style="padding:0.6rem 1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:0.82rem">
+        <span style="color:var(--muted)">[${s.score}pts] ${escHtml(s.title)}</span>
+        <span style="color:var(--muted)">${escHtml(s.source || '')}</span>
+      </div>`).join('')}
+    </div></div>` : ''}`;
+}
+
+// ── Newsletter ─────────────────────────────────────────────────
+function renderNewsletter(data) {
+  const el = document.getElementById('newsletterContent');
+  const d = data.newsletter;
+  if (!d || d.status === 'never_run' || !d.drafts?.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📰</div>
+      <p>No newsletter drafts yet.<br><br>Run the Content Curator first, then:<br><br>
+      <code style="background:var(--blue-ghost);padding:0.2rem 0.5rem;border-radius:5px;font-family:monospace">cd agents/newsletter<br>claude "Draft this week's Commercial Clarity Briefing newsletter."</code></p></div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div style="background:var(--blue-ghost);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:0.875rem;color:var(--navy)">
+      <strong>The Commercial Clarity Briefing</strong> — Turning Organisational Chaos into Commercial Clarity
+    </div>
+    ${d.drafts.map(draft => `
+      <div class="content-card" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+        <div>
+          <div class="content-card-title">📰 ${escHtml(draft.subject || 'Draft — week of ' + draft.date)}</div>
+          <div class="content-card-meta">Week of ${escHtml(draft.date)} · ${draft.wordCount ? draft.wordCount + ' words' : ''} · ${escHtml(draft.theme || '')}</div>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          <a class="agent-btn primary" href="/outputs/newsletter/newsletter-${draft.date}.md" target="_blank">Preview →</a>
+          <button class="agent-btn secondary" onclick="copyToClipboard(location.origin+'/outputs/newsletter/newsletter-${draft.date}.md', this)">Copy link</button>
+        </div>
+      </div>`).join('')}
+    <div style="background:var(--blue-ghost);border-radius:12px;padding:1.25rem;margin-top:1rem;font-size:0.875rem;color:var(--navy)">
+      <strong>Next steps:</strong> Preview the draft above, copy into your email platform (Mailchimp, Beehiiv, etc.), personalise, and schedule for Thursday send.
+    </div>`;
+}
+
+// ── Content Repurpose ──────────────────────────────────────────
+function renderRepurpose(data) {
+  const el = document.getElementById('repurposeContent');
+  const d = data.repurpose;
+  if (!d || d.status === 'never_run' || !d.repurposed?.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">♻️</div>
+      <p>No content repurposed yet.<br><br>Run: <code style="background:var(--blue-ghost);padding:0.2rem 0.5rem;border-radius:5px;font-family:monospace">cd agents/content-repurpose<br>claude "Repurpose this content into all six formats: [paste content]"</code></p></div>`;
+    return;
+  }
+  const FORMAT_LABELS = { 'linkedin-long': 'LinkedIn Long', 'linkedin-short': 'LinkedIn Short', 'twitter-thread': 'X/Twitter Thread', 'email-snippet': 'Email Snippet', 'pull-quotes': 'Pull Quotes', 'blog-outline': 'Blog Outline' };
+  el.innerHTML = `
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap">
+      <div class="vital-card" style="flex:1"><div class="vital-label">Total Repurposed</div><div class="vital-value">${d.count}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">This Month</div><div class="vital-value">${d.thisMonth ?? 0}</div></div>
+    </div>
+    ${d.repurposed.map(r => `
+      <div class="content-card">
+        <div class="content-card-header">
+          <div class="content-card-score" style="font-size:1.2rem">♻️</div>
+          <div>
+            <div class="content-card-title">${escHtml(r.sourceTitle)}</div>
+            <div class="content-card-meta">${escHtml(r.sourceType)} · ${escHtml(r.date)}</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem">
+          ${(r.formatsProduced || []).map(f => `<span class="opp-tag sector">${FORMAT_LABELS[f] || f}</span>`).join('')}
+        </div>
+        ${r.folder ? `<div style="font-size:0.75rem;color:var(--muted);margin-top:0.5rem">outputs/content-repurpose/${escHtml(r.folder)}</div>` : ''}
+      </div>`).join('')}`;
+}
+
+// ── SEO Gaps ───────────────────────────────────────────────────
+function renderSeo(data) {
+  const el = document.getElementById('seoContent');
+  const d = data.seo;
+  if (!d || d.status === 'never_run' || !d.date) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🔎</div>
+      <p>No SEO gap report yet.<br><br>Run: <code style="background:var(--blue-ghost);padding:0.2rem 0.5rem;border-radius:5px;font-family:monospace">cd agents/seo-gaps<br>claude "Audit didianolue.co.uk content against target keywords and identify gaps."</code></p></div>`;
+    return;
+  }
+  if (d.date) document.getElementById('seoMeta').textContent = `Last run: ${d.date} · ${d.totalPublished} articles published · ${d.topicsOnTrack} topics on track`;
+  el.innerHTML = `
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap">
+      <div class="vital-card" style="flex:1"><div class="vital-label">Published</div><div class="vital-value">${d.totalPublished}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">On Track</div><div class="vital-value" style="color:var(--green)">${d.topicsOnTrack}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">Gaps Found</div><div class="vital-value" style="color:${d.gaps.length > 0 ? 'var(--amber)' : 'var(--green)'}">${d.gaps.length}</div></div>
+    </div>
+    ${d.gaps.length > 0 ? `
+      <div class="section-header"><div class="section-header-left"><div class="section-title" style="font-size:1rem">Content Gaps</div></div></div>
+      ${d.gaps.map(g => `
+        <div class="opp-card${g.urgent ? ' rate-gap' : ''}">
+          <div class="opp-card-header">
+            <div>
+              <div class="opp-title">${g.urgent ? '🔴' : '🟡'} ${escHtml(g.topic)}</div>
+              <div class="opp-org">${escHtml(g.targetKeyword)}</div>
+            </div>
+            <span class="opp-tag sector">Pillar ${g.pillar}</span>
+          </div>
+          <div style="font-size:0.8rem;color:var(--muted)">${g.daysSince > 9000 ? 'Never covered' : `${g.daysSince} days since last article (target: every ${g.targetDays} days)`}</div>
+        </div>`).join('')}` : '<div style="color:var(--green);font-weight:600;padding:1rem 0">✅ All topics on track!</div>'}
+    ${d.briefs?.length > 0 ? `
+      <div class="section-header" style="margin-top:1.5rem"><div class="section-header-left"><div class="section-title" style="font-size:1rem">Article Briefs</div><div class="section-sub">Write these next</div></div></div>
+      ${d.briefs.map(b => `
+        <div class="content-card" style="border-color:var(--blue-pale)">
+          <div class="content-card-title" style="margin-bottom:0.35rem">${escHtml(b.title)}</div>
+          <div style="font-style:italic;font-size:0.85rem;color:var(--muted);margin-bottom:0.75rem">${escHtml(b.angle)}</div>
+          <ul style="list-style:disc;padding-left:1.25rem;font-size:0.85rem;color:var(--ink);line-height:1.6;margin-bottom:0.75rem">${b.outline.map(o => `<li>${escHtml(o)}</li>`).join('')}</ul>
+          <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
+            ${b.targetKeywords.map(k => `<span class="opp-tag sector">${escHtml(k)}</span>`).join('')}
+            <span class="opp-tag sector">~${b.estimatedWords}w</span>
+            <span class="opp-tag sector">Pillar ${b.pillar}</span>
+          </div>
+        </div>`).join('')}` : ''}`;
+}
+
+// ── Site Health ────────────────────────────────────────────────
+function renderHealth(data) {
+  const el = document.getElementById('healthContent');
+  const d = data.health;
+  if (!d || d.status === 'never_run' || !d.date) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🏥</div>
+      <p>No health report yet.<br><br>Run: <code style="background:var(--blue-ghost);padding:0.2rem 0.5rem;border-radius:5px;font-family:monospace">cd agents/site-health<br>claude "Check all pages and API endpoints on didianolue.co.uk."</code></p></div>`;
+    return;
+  }
+  if (d.date) document.getElementById('healthMeta').textContent = `Last run: ${d.date} · ${d.siteUrl}`;
+  const si = { ok: '🟢', warning: '🟡', error: '🔴', down: '🔴' };
+  el.innerHTML = `
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap">
+      <div class="vital-card" style="flex:1"><div class="vital-label">Pages OK</div><div class="vital-value">${d.pagesOk}/${d.pages?.length||0}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">Warnings</div><div class="vital-value" style="color:${d.warnings > 0 ? 'var(--amber)' : 'var(--green)'}">${d.warnings}</div></div>
+      <div class="vital-card" style="flex:1"><div class="vital-label">Critical Down</div><div class="vital-value" style="color:${d.criticalDown?.length > 0 ? 'var(--red)' : 'var(--green)'}">${d.criticalDown?.length||0}</div></div>
+    </div>
+    <div class="section-header"><div class="section-header-left"><div class="section-title" style="font-size:1rem">Pages</div></div></div>
+    ${(d.pages||[]).map(p => `
+      <div class="opp-card${p.status === 'error' || p.status === 'down' ? ' rate-gap' : ''}">
+        <div class="opp-card-header">
+          <div>
+            <div class="opp-title">${si[p.status]||'⚪'} ${escHtml(p.name)} <span style="font-size:0.75rem;color:var(--muted);font-weight:400">HTTP ${p.httpStatus}</span></div>
+            <div class="opp-org">${escHtml(p.url)}</div>
+          </div>
+        </div>
+        ${p.failedChecks?.length ? `<div>${p.failedChecks.map(c => `<div style="font-size:0.8rem;color:var(--muted);padding:0.2rem 0">↳ ${escHtml(c.check)}: ${escHtml(c.fix)}</div>`).join('')}</div>` : ''}
+      </div>`).join('')}
+    ${d.endpoints?.length ? `
+      <div class="section-header" style="margin-top:1rem"><div class="section-header-left"><div class="section-title" style="font-size:1rem">API Endpoints</div></div></div>
+      ${d.endpoints.map(e => `
+        <div class="opp-card">
+          <div class="opp-title">${si[e.status]||'⚪'} ${escHtml(e.name)} <span style="font-size:0.75rem;color:var(--muted);font-weight:400">HTTP ${e.httpStatus}</span></div>
+          <div class="opp-org">${escHtml(e.url)}</div>
+          ${e.error ? `<div style="font-size:0.8rem;color:var(--red);margin-top:0.25rem">${escHtml(e.error)}</div>` : ''}
+        </div>`).join('')}` : ''}`;
+}
+
+// ══ UTILITIES ══════════════════════════════════════════════════
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(str) { return String(str || '').replace(/'/g, "\\'"); }
+function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+function showToast(msg, type = 'success') {
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 5000);
+}
+function copyToClipboard(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn?.textContent;
+    if (btn) { btn.textContent = '✓ Copied'; setTimeout(() => { btn.textContent = orig; }, 1500); }
+    else showToast('Copied!', 'success');
+  });
+}
+</script>
+</body>
+</html>

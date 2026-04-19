@@ -8,22 +8,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500&display=swap');
 
 :root {
-  --ink: #111827;
-  --primary: #1d4ed8;
-  --primary-mid: #2563eb;
-  --accent: #3b82f6;
-  --accent-pale: #dbeafe;
-  --ghost: #eff6ff;
+  --ink: #0F1A2E;
+  --primary: #1F3864;
+  --primary-mid: #2E5FA3;
+  --accent: #4A7FC1;
+  --accent-pale: #D6E4F7;
+  --ghost: #EBF2FB;
   --amber: #D4860A;
   --amber-pale: #FEF3DC;
   --red: #C0392B;
   --red-pale: #FDECEA;
   --blue: #1A5CB8;
   --blue-pale: #E8F0FC;
-  --cream: #f9fafb;
+  --cream: #F7FAFF;
   --white: #FFFFFF;
-  --border: #e5e7eb;
-  --muted: #6b7280;
+  --border: #C5D8F0;
+  --muted: #6B7B8F;
   --fb: #1877F2;
   --ig: #C13584;
   --li: #0A66C2;
@@ -157,6 +157,21 @@ textarea { min-height: 68px; }
 .tone-opt.active { background: var(--primary); border-color: var(--primary); color: white; }
 .tone-opt:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
 
+/* ── CAMPAIGN OBJECTIVE ── */
+.obj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 10px; }
+.obj-card {
+  background: white; border: 2px solid var(--border); border-radius: 10px;
+  padding: 11px 6px 9px; cursor: pointer; text-align: center;
+  transition: all 0.15s; display: flex; flex-direction: column; gap: 4px;
+  font-family: 'Inter', sans-serif;
+}
+.obj-card:hover { border-color: var(--accent); }
+.obj-card.active { border-color: var(--accent); background: var(--ghost); }
+.obj-icon { font-size: 18px; line-height: 1; }
+.obj-label { font-size: 10.5px; font-weight: 600; color: var(--ink); }
+.obj-desc { font-size: 11.5px; color: var(--muted); line-height: 1.45; margin: 0; }
+.obj-card.active .obj-label { color: var(--primary-mid); }
+
 .research-toggles { display: flex; flex-direction: column; gap: 7px; }
 .toggle-row {
   display: flex; align-items: center; justify-content: space-between;
@@ -225,6 +240,7 @@ textarea { min-height: 68px; }
 .log-line { opacity: 0; animation: fadeIn 0.3s forwards; }
 .log-line.done { color: #86EFAC; }
 .log-line.info { color: #93C5FD; }
+.log-line.warn { color: #FCD34D; }
 @keyframes fadeIn { to { opacity: 1; } }
 
 .research-findings {
@@ -241,6 +257,12 @@ textarea { min-height: 68px; }
 
 /* ── APPROVAL BOARD ── */
 .approval-phase { display: none; }
+.fact-check-banner {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: #451A03; border: 1px solid #D97706; border-radius: 8px;
+  padding: 12px 16px; margin-bottom: 20px; color: #FDE68A; font-size: 13px; line-height: 1.5;
+}
+.fact-check-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
 .board-controls {
   display: flex; align-items: center; gap: 10px;
   margin-bottom: 18px; flex-wrap: wrap;
@@ -396,6 +418,12 @@ textarea { min-height: 68px; }
 }
 .send-btn:hover    { background: #5800aa; }
 .send-btn:disabled { background: #9CA3AF; cursor: not-allowed; }
+.test-conn-btn {
+  padding: 11px 16px; background: transparent; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 9px; font-size: 13px;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.test-conn-btn:hover { border-color: var(--green-accent); color: var(--green-accent); }
 
 /* ── SENDING PHASE ── */
 .sending-phase { display: none; }
@@ -490,20 +518,60 @@ textarea { min-height: 68px; }
   .day-platform-row { grid-template-columns: 1fr; }
   .stats-bar { grid-template-columns: repeat(2,1fr); }
 }
+
+/* ── UPLOAD CSV ── */
+.idle-upload-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; max-width: 460px; }
+.import-or {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; margin: 4px 0; color: var(--muted); font-size: 12px;
+}
+.import-or::before, .import-or::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.upload-card {
+  width: 100%; background: white; border: 2px dashed var(--border);
+  border-radius: 13px; padding: 22px 24px; text-align: center;
+  cursor: pointer; transition: border-color 0.2s, background 0.2s;
+}
+.upload-card:hover { border-color: var(--accent); background: var(--ghost); }
+.upload-card h3 { font-family: 'Inter', serif; font-size: 17px; color: var(--ink); margin-bottom: 5px; }
+.upload-card p  { font-size: 12px; color: var(--muted); margin-bottom: 14px; max-width: 100%; }
+.upload-card-btns { display: flex; gap: 9px; justify-content: center; flex-wrap: wrap; }
+.upload-csv-btn {
+  padding: 8px 18px; background: var(--primary); color: white;
+  border: none; border-radius: 7px; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s;
+}
+.upload-csv-btn:hover { background: var(--primary-mid); }
+.sample-csv-btn {
+  padding: 8px 18px; background: white; color: var(--muted);
+  border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px;
+  cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.15s;
+}
+.sample-csv-btn:hover { border-color: var(--accent); color: var(--accent); }
+.import-error-banner {
+  display: none; background: var(--amber-pale); border: 1.5px solid #f0c060;
+  border-radius: 9px; padding: 12px 16px; font-size: 12px; color: #7a4f00;
+  line-height: 1.8; max-width: 460px; width: 100%;
+}
+.import-error-banner.show { display: block; }
+.import-error-banner strong { color: var(--ink); }
+.import-error-close {
+  float: right; background: none; border: none; font-size: 15px;
+  cursor: pointer; color: #7a4f00; margin-left: 8px; line-height: 1;
+}
 </style>
 </head>
 <body>
 
 <!-- Login Screen -->
-<div id="loginScreen" style="display:flex; align-items:center; justify-content:center; min-height:100vh; background:#1d4ed8; position:fixed; top:0; left:0; width:100%; z-index:9999;">
+<div id="loginScreen" style="display:flex; align-items:center; justify-content:center; min-height:100vh; background:#1F3864; position:fixed; top:0; left:0; width:100%; z-index:9999;">
   <div style="background:white; padding:3rem; border-radius:15px; max-width:400px; width:90%; text-align:center;">
     <img src="images/logo.png" alt="Didi Anolue Consulting" style="height:80px; margin-bottom:1rem;">
-    <h1 style="color:#1d4ed8; margin-bottom:0.5rem;">Admin Access</h1>
+    <h1 style="color:#1F3864; margin-bottom:0.5rem;">Admin Access</h1>
     <p style="color:#666; margin-bottom:2rem;">Social Command Centre</p>
     <input type="password" id="socialPasswordInput" placeholder="Enter admin password"
            style="width:100%; padding:1rem; border:2px solid #ddd; border-radius:5px; font-size:1rem; margin-bottom:1rem;"
            onkeypress="if(event.key==='Enter') socialLogin()">
-    <button onclick="socialLogin()" style="width:100%; background:#1d4ed8; color:white; border:none; padding:1rem; border-radius:5px; font-size:1rem; font-weight:600; cursor:pointer;">Sign In</button>
+    <button onclick="socialLogin()" style="width:100%; background:#1F3864; color:white; border:none; padding:1rem; border-radius:5px; font-size:1rem; font-weight:600; cursor:pointer;">Sign In</button>
     <p id="socialLoginError" style="color:#dc3545; margin-top:1rem; display:none;">Incorrect password</p>
   </div>
 </div>
@@ -530,6 +598,8 @@ textarea { min-height: 68px; }
     <div class="step" id="step5"><div class="step-num">5</div>Live</div>
   </div>
 
+  <a href="/admin/" style="color:rgba(255,255,255,0.65); font-size:0.82rem; font-weight:500; text-decoration:none; white-space:nowrap; display:flex; align-items:center; gap:0.4rem; transition:color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">← Hub</a>
+
 </header>
 
 <!-- SAVED SESSION BANNER — shown automatically if drafts exist -->
@@ -546,6 +616,30 @@ textarea { min-height: 68px; }
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
+
+    <div class="sidebar-section">
+      <h3>Campaign Objective</h3>
+      <div class="obj-grid" id="objGrid">
+        <button class="obj-card active" data-obj="newsletter" onclick="selectObjective(this)">
+          <span class="obj-icon">🎯</span>
+          <span class="obj-label">Grow Newsletter</span>
+        </button>
+        <button class="obj-card" data-obj="directory" onclick="selectObjective(this)">
+          <span class="obj-icon">🏢</span>
+          <span class="obj-label">Fill Directory</span>
+        </button>
+        <button class="obj-card" data-obj="reach" onclick="selectObjective(this)">
+          <span class="obj-icon">📣</span>
+          <span class="obj-label">Grow Audience</span>
+        </button>
+        <button class="obj-card" data-obj="trust" onclick="selectObjective(this)">
+          <span class="obj-icon">🤝</span>
+          <span class="obj-label">Build Authority</span>
+        </button>
+      </div>
+      <p class="obj-desc" id="objDesc">Drive sign-ups to The Old Oak Weekly. 3 of 5 days include a natural newsletter CTA woven into the post.</p>
+    </div>
+
     <div class="sidebar-section">
       <h3>Campaign Brief</h3>
       <div class="form-group">
@@ -611,6 +705,28 @@ textarea { min-height: 68px; }
       <div class="idle-icon">🌳</div>
       <h2>Ready when you are</h2>
       <p>Enter your weekly theme, toggle your research sources, then hit Research & Draft. Approved posts go directly to Buffer via the Didi Anolue Consulting API.</p>
+
+      <div class="import-or">or upload a spreadsheet</div>
+
+      <div class="idle-upload-wrapper">
+        <div id="importErrorBanner" class="import-error-banner">
+          <button class="import-error-close" onclick="document.getElementById('importErrorBanner').classList.remove('show')">✕</button>
+          <strong>Some rows were skipped:</strong>
+          <div id="importErrorList"></div>
+        </div>
+        <div class="upload-card" onclick="document.getElementById('csvFileInput').click()">
+          <div style="font-size:28px;margin-bottom:8px">📊</div>
+          <h3>Upload from spreadsheet</h3>
+          <p>Upload a pre-written CSV to skip AI drafting and jump straight to review &amp; approval.<br>
+             <em>day · platform · caption · hashtags · best_time · media_url · day_theme</em></p>
+          <div class="upload-card-btns" onclick="event.stopPropagation()">
+            <button class="upload-csv-btn" onclick="document.getElementById('csvFileInput').click()">⬆ Upload CSV</button>
+            <button class="sample-csv-btn" onclick="downloadSampleCSV()">⬇ Download Sample</button>
+          </div>
+        </div>
+        <input type="file" id="csvFileInput" accept=".csv" style="display:none"
+               onchange="loadFromSpreadsheet(this.files[0])">
+      </div>
     </div>
 
     <!-- RESEARCH -->
@@ -633,6 +749,11 @@ textarea { min-height: 68px; }
         <h2>Review &amp; Approve</h2>
       </div>
 
+      <div class="fact-check-banner">
+        <span class="fact-check-icon">⚠</span>
+        <span><strong>AI-generated content — fact-check before publishing.</strong> Posts are based on available news headlines. Verify any specific statistics, dates, or project milestones independently before scheduling.</span>
+      </div>
+
       <div class="stats-bar" id="statsBar"></div>
 
       <div class="board-controls">
@@ -650,10 +771,14 @@ textarea { min-height: 68px; }
           <h3>Send to Buffer</h3>
           <p id="sendBarDesc">Approve posts above, then send them directly to Buffer.</p>
         </div>
+        <button class="test-conn-btn" onclick="testBufferConnection()" title="Check API key and channel IDs">
+          🔌 Test Connection
+        </button>
         <button class="send-btn" id="sendBtn" onclick="sendToSocial()">
           📤 Schedule via Buffer
         </button>
       </div>
+      <div id="bufferTestResult" style="display:none; margin-top:12px; padding:12px 16px; border-radius:8px; font-size:12px; font-family: 'Geist Mono', monospace; white-space:pre-wrap; word-break:break-all; background:#0F1A0A; border:1px solid var(--border); color:#D4E8C8;"></div>
     </div>
 
     <!-- SENDING -->
@@ -706,6 +831,37 @@ if (sessionStorage.getItem('adminAuth') === 'true') {
 const SESSION_KEY  = 'didi_drafts_v2';
 
 
+async function testBufferConnection() {
+  const box = document.getElementById('bufferTestResult');
+  box.style.display = 'block';
+  box.textContent = 'Testing Buffer connection…';
+  try {
+    const res = await fetch('/api/buffer-post');
+    const data = await res.json();
+
+    if (!res.ok) {
+      box.style.borderColor = '#C0392B';
+      box.textContent = '✗ ' + (data.error || `HTTP ${res.status}`) + (data.hint ? `\n${data.hint}` : '');
+      return;
+    }
+    const channels = data.channels || [];
+    const lines = [
+      `✓ Connected — ${channels.length} channel(s) found`,
+      '',
+      ...channels.map(c => `  ${(c.service || '?').padEnd(12)} id: ${c.id}  name: ${c.name || '—'}`),
+    ];
+    if (channels.length === 0) {
+      lines.push('  No channels returned. Re-authorise Facebook/Instagram/LinkedIn at buffer.com → Channels.');
+    }
+
+    box.style.borderColor = channels.length ? '#4C8A35' : '#D4860A';
+    box.textContent = lines.join('\n');
+  } catch (err) {
+    box.style.borderColor = '#C0392B';
+    box.textContent = '✗ Could not reach /api/buffer-post: ' + err.message;
+  }
+}
+
 async function postOneToSocial({ platform, text, scheduledAt, mediaUrl, day }) {
   const res = await fetch('/api/buffer-post', {
     method:  'POST',
@@ -714,7 +870,10 @@ async function postOneToSocial({ platform, text, scheduledAt, mediaUrl, day }) {
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error((data?.error || `HTTP ${res.status}`) + (data?.hint ? ` | ${data.hint}` : ''));
+  if (!res.ok) {
+    const detail = data?.details ? ` | details: ${JSON.stringify(data.details).slice(0, 200)}` : '';
+    throw new Error((data?.error || `HTTP ${res.status}`) + (data?.hint ? ` | ${data.hint}` : '') + detail);
+  }
   if (data.skipped) return { skipped: true, reason: data.reason };
 
   return { success: true, postId: data.postId };
@@ -816,6 +975,73 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════
+// CAMPAIGN OBJECTIVES
+// ═══════════════════════════════════════════════════════════════
+const OBJECTIVES = {
+  newsletter: {
+    desc: 'Drive sign-ups to The Old Oak Weekly. 3 of 5 days include a natural newsletter CTA woven into the post.',
+    prompt: `CAMPAIGN OBJECTIVE — Grow Newsletter Sign-ups:
+The overarching goal this week is to convert followers into subscribers of The Old Oak Weekly (sign-up at oldoaktown.co.uk).
+STRATEGIC RULES:
+- Exactly 3 of the 5 days must include a newsletter call-to-action woven naturally into the post — never bolted on as a last line
+- The remaining 2 days are pure value content with no CTA — these build the trust that makes the CTA days work
+- CTAs to rotate (use each at most once): "Get the full story every week — sign up free at oldoaktown.co.uk", "Join thousands of West Londoners who get the briefing before anyone else", "Inside The Old Oak Weekly this week: [tease something specific to the theme]", "Never miss an update — it's free, it's local, it's yours"
+- FACEBOOK: The closing question on CTA days should transition naturally into the sign-up mention
+- INSTAGRAM: On CTA days, the final line should reference the newsletter link in bio
+- LINKEDIN: Position the newsletter as the essential weekly briefing for anyone with professional interest in Old Oak — developers, planners, investors`
+  },
+  directory: {
+    desc: 'Spotlight local businesses and drive free listings. Builds both revenue and community value.',
+    prompt: `CAMPAIGN OBJECTIVE — Grow the Business Directory:
+The overarching goal this week is to drive local business owners to list on the Old Oak Town directory (oldoaktown.co.uk/business-directory).
+STRATEGIC RULES:
+- At least 2 days should feature a warm spotlight on a local business — write it as community celebration, not advertising
+- At least 2 days should include a soft CTA for business owners: "Is your business on the directory? It's free — oldoaktown.co.uk", "Know a local business that deserves more visibility? Tag them below"
+- 1 day should be pure community content with no business CTA — earn trust before asking
+- FACEBOOK: "Tag a local business owner who should see this" is a highly effective closing call-to-action this week
+- INSTAGRAM: Lead with local pride and community identity, not sales language
+- LINKEDIN: Direct appeal to business owners and entrepreneurs: "If you serve West London, you should be here. Free listing at oldoaktown.co.uk"`
+  },
+  reach: {
+    desc: 'Maximise shares, tags, and new follows. Content designed to travel beyond existing followers.',
+    prompt: `CAMPAIGN OBJECTIVE — Maximise Reach & Audience Growth:
+The overarching goal this week is to grow total reach — new followers, organic shares, and people tagging friends.
+STRATEGIC RULES:
+- Every post needs a "forward momentum" hook that makes existing followers want to show it to someone who doesn't follow yet
+- Use surprising stats, before/after contrasts, local nostalgia, or vivid future vision to trigger saves and shares
+- Explicit sharing prompts: "Share this with a neighbour", "Tag someone who commutes through this area", "Save this — Old Oak Common is the biggest change to West London in a generation"
+- Write as if explaining to someone who's never heard of the project — that's who gets tagged in
+- FACEBOOK: The closing question should invite people to tag a specific type of person (a neighbour, someone flat-hunting in West London, a friend who works in construction)
+- INSTAGRAM: Strong hook lines, emotionally vivid, designed for saves — saves signal reach to the algorithm
+- LINKEDIN: Hook the professional who will share with their network: urban planners, architects, investors, developers`
+  },
+  trust: {
+    desc: 'No CTAs — pure value content. Establishes Old Oak Town as the definitive go-to local source.',
+    prompt: `CAMPAIGN OBJECTIVE — Build Community Authority & Trust:
+The overarching goal this week is depth and credibility. Zero conversion CTAs. This is the long-term investment that makes every other objective easier.
+STRATEGIC RULES:
+- Every post must deliver specific, useful, hard-to-find information — dates, planning references, named sources, real numbers
+- Do not include any sign-up prompts, directory pushes, or conversion CTAs of any kind this week
+- Position Old Oak Town as the most informed, most reliable, most local voice on the regeneration — not a social media account, but a trusted institution
+- When in doubt, go deeper — more detail is better than less this week
+- FACEBOOK: Long-form posts this week. Give people something to save, return to, and share in local Facebook groups
+- INSTAGRAM: Structure captions like mini-infographics — numbered facts, clear headers, dense useful content
+- LINKEDIN: Write the 200–250 word analysis posts that get shared by planners, journalists, and property professionals`
+  }
+};
+
+function selectObjective(btn) {
+  document.querySelectorAll('.obj-card').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('objDesc').textContent = OBJECTIVES[btn.dataset.obj].desc;
+}
+
+function getObjectivePrompt() {
+  const active = document.querySelector('.obj-card.active');
+  return active ? (OBJECTIVES[active.dataset.obj]?.prompt || '') : '';
+}
+
+// ═══════════════════════════════════════════════════════════════
 // PIPELINE — research, draft, flatten
 // ═══════════════════════════════════════════════════════════════
 async function runPipeline() {
@@ -829,14 +1055,16 @@ async function runPipeline() {
 
   const log = document.getElementById('researchLog');
   log.innerHTML = '';
+  const activeObj = document.querySelector('.obj-card.active');
+  const objLabel = activeObj ? OBJECTIVES[activeObj.dataset.obj].desc.split('.')[0] : '';
     addLog(log, '> Initialising Didi Anolue Consulting research pipeline…', 0);
   addLog(log, '> Searching: UK procurement & contracts news…', 900, 'info');
   addLog(log, '> Fetching: didianolue.co.uk content…', 1400, 'info');
   addLog(log, '> Searching: public sector commercial leadership updates…', 1900, 'info');
   addLog(log, '> Research complete. Passing to drafting engine…', 2400, 'done');
-  addLog(log, '> Generating 15 posts: 5 days × 3 platforms…', 3000, 'info');
+  addLog(log, `> Generating ${DAYS.length * PLATFORMS.length} posts: ${DAYS.length} days \u00d7 ${PLATFORMS.length} platforms\u2026`, 200, 'info');
 
-  await delay(3400);
+  await delay(400);
   setStep(2);
 
   const weekDate = document.getElementById('weekDate').value;
@@ -845,7 +1073,7 @@ async function runPipeline() {
 
   let plan;
   try {
-    plan = await callClaude(theme, context, tone, weekDate);
+    plan = await callClaude(theme, context, tone, weekDate, useWebSearch);
   } catch (e) {
     showToast('Generation failed: ' + e.message, 'error');
     document.getElementById('runBtn').disabled = false;
@@ -854,7 +1082,7 @@ async function runPipeline() {
     return;
   }
 
-  addLog(log, '> ✓ 15 posts drafted successfully', 0, 'done');
+  addLog(log, `> ✓ ${DAYS.length * PLATFORMS.length} posts drafted successfully`, 0, 'done');
   addLog(log, '> Building approval board…', 400, 'done');
   await delay(700);
 
@@ -911,12 +1139,12 @@ function getPreviousThemes() {
   } catch (_) { return []; }
 }
 
-async function callClaude(theme, context, tone, weekDate) {
+async function callClaude(theme, context, tone, weekDate, useWebSearch = true) {
   const previousThemes = getPreviousThemes();
   const response = await fetch('/api/generate-posts', {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify({ theme, context, tone, weekDate, previousThemes })
+    body:    JSON.stringify({ theme, context, tone, weekDate, previousThemes, useWebSearch, objectivePrompt: getObjectivePrompt() })
   });
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
@@ -941,7 +1169,7 @@ function flattenPosts(plan, weekDate) {
         caption:       post.caption,
         hashtags:      post.hashtags,
         bestTime:      post.bestTime,
-        scheduledDate: d.toISOString().split('T')[0],
+        scheduledDate: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,
         status:        'pending',
         mediaUrl:      ''
       });
@@ -951,13 +1179,34 @@ function flattenPosts(plan, weekDate) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// PLATFORM CONFIG — edit or regenerate via social-agent-generator.html
+// ═══════════════════════════════════════════════════════════════
+const PLATFORMS = [
+  { id: 'facebook',  label: 'Facebook',  emoji: '📘', css: 'fb', color: '#1877F2', bg: '#E7F0FD', charLimit: 63206, requiresMedia: false, defaultTime: '9:00am'  },
+  { id: 'instagram', label: 'Instagram', emoji: '📸', css: 'ig', color: '#C13584', bg: '#FEE9F3', charLimit: 2200,  requiresMedia: true,  defaultTime: '11:00am' },
+  { id: 'linkedin',  label: 'LinkedIn',  emoji: '💼', css: 'li', color: '#0A66C2', bg: '#E8F0FA', charLimit: 1248,  requiresMedia: false, defaultTime: '8:00am'  },
+];
+// ═══════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════
 // APPROVAL BOARD
 // ═══════════════════════════════════════════════════════════════
-const PLAT_CLS   = { facebook:'fb',        instagram:'ig',        linkedin:'li' };
-const PLAT_LABEL = { facebook:'📘 Facebook', instagram:'📸 Instagram', linkedin:'💼 LinkedIn' };
-const PLAT_ORDER = ['facebook','instagram','linkedin'];
+// Derived lookups — do not edit
+const PLAT_ORDER = PLATFORMS.map(p => p.id);
+const PLAT_CLS   = Object.fromEntries(PLATFORMS.map(p => [p.id, p.css]));
+const PLAT_LABEL = Object.fromEntries(PLATFORMS.map(p => [p.id, `${p.emoji} ${p.label}`]));
 const STATUS_TXT = { pending:'Pending', approved:'Approved ✓', rejected:'Rejected ✗', sent:'Sent ✓' };
 const DAYS       = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+
+// Inject per-platform CSS from config
+(function injectPlatformCSS() {
+  const css = PLATFORMS.map(p => `
+.post-card.${p.css}-card { border-top-color: ${p.color}; }
+.plat-pill.${p.css} { background: ${p.bg}; color: ${p.color}; }`).join('');
+  const s = document.createElement('style');
+  s.textContent = css;
+  document.head.appendChild(s);
+})();
 
 function renderApprovalBoard(filter) {
   filter = filter || state.currentFilter;
@@ -997,7 +1246,8 @@ function renderApprovalBoard(filter) {
         row.appendChild(document.createElement('div'));
         return;
       }
-      const isIg = plat === 'instagram';
+      const platDef = PLATFORMS.find(p => p.id === plat) || {};
+      const requiresMedia = platDef.requiresMedia ?? false;
       const card = document.createElement('div');
       card.className = `post-card ${PLAT_CLS[plat]}-card ${post.status !== 'pending' ? post.status : ''}`;
       card.id        = `card-${post.id}`;
@@ -1011,14 +1261,14 @@ function renderApprovalBoard(filter) {
         <div class="card-body">
           <div class="card-caption" id="cap-${post.id}">${escHtml(post.caption)}</div>
           <textarea class="caption-edit" id="edit-${post.id}">${post.caption}</textarea>
-          <div class="card-media${isIg ? ' ig-media' : ''}">
+          <div class="card-media${requiresMedia ? ' ig-media' : ''}">
             <div class="media-label">
-              ${isIg
+              ${requiresMedia
                 ? '📸 Image / Video URL <span class="media-req">Required</span>'
                 : '🖼 Photo / Video (optional)'}
             </div>
             <input class="media-input" id="media-${post.id}" type="url"
-              placeholder="${isIg ? 'Paste image or video URL…' : 'Paste image or video URL (optional)'}"
+              placeholder="${requiresMedia ? 'Paste image or video URL…' : 'Paste image or video URL (optional)'}"
               value="${escHtml(post.mediaUrl || '')}"
               oninput="updateMediaUrl('${post.id}', this.value)">
             <img class="media-preview" id="thumb-${post.id}"
@@ -1186,7 +1436,7 @@ async function sendToSocial() {
   addLog(slog, `> Connecting to Buffer API…`, 500, 'info');
   await delay(800);
 
-  const icons = { facebook:'📘', instagram:'📸', linkedin:'💼' };
+  const icons = Object.fromEntries(PLATFORMS.map(p => [p.id, p.emoji]));
   let successCount = 0, failCount = 0, skippedCount = 0;
 
   for (let i = 0; i < approved.length; i++) {
@@ -1329,6 +1579,161 @@ function showToast(msg, type = '') {
   t.textContent = msg;
   t.className   = `toast show ${type}`;
   setTimeout(() => { t.className = 'toast'; }, 3800);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SPREADSHEET UPLOAD
+// ═══════════════════════════════════════════════════════════════
+const VALID_DAYS      = ['monday','tuesday','wednesday','thursday','friday'];
+const VALID_PLATFORMS = PLAT_ORDER;
+const PLATFORM_TIMES  = Object.fromEntries(PLATFORMS.map(p => [p.id, p.defaultTime]));
+
+// Minimal RFC-4180 CSV row parser (handles quoted fields with commas / escaped quotes)
+function parseCSVRow(line) {
+  const fields = [];
+  let cur = '', inQuote = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuote && line[i + 1] === '"') { cur += '"'; i++; }
+      else { inQuote = !inQuote; }
+    } else if (ch === ',' && !inQuote) {
+      fields.push(cur); cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  fields.push(cur);
+  return fields;
+}
+
+function parseCSV(text) {
+  const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+  let headers = null;
+  const rows  = [];
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line || line.startsWith('#')) continue;
+    const fields = parseCSVRow(line);
+    if (!headers) {
+      headers = fields.map(h => h.trim().toLowerCase().replace(/\s+/g, '_'));
+    } else {
+      if (fields.every(f => !f.trim())) continue;
+      const obj = {};
+      headers.forEach((h, idx) => { obj[h] = (fields[idx] || '').trim(); });
+      rows.push(obj);
+    }
+  }
+  return rows;
+}
+
+function getScheduledDateForDay(dayName) {
+  const weekDate = document.getElementById('weekDate').value;
+  const dayOffset = DAYS.indexOf(dayName);
+  const d = new Date(weekDate + 'T00:00:00');
+  d.setDate(d.getDate() + Math.max(0, dayOffset));
+  return d.toISOString().split('T')[0];
+}
+
+function loadFromSpreadsheet(file) {
+  if (!file) return;
+  document.getElementById('csvFileInput').value = ''; // allow re-upload of same file
+  document.getElementById('importErrorBanner').classList.remove('show');
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const rows   = parseCSV(e.target.result);
+    const errors = [];
+    const posts  = [];
+
+    rows.forEach((row, idx) => {
+      const rowNum   = idx + 2; // 1-indexed, account for header
+      const day      = (row.day || '').trim();
+      const platform = (row.platform || '').trim().toLowerCase();
+      const caption  = (row.caption || '').trim();
+
+      if (!VALID_DAYS.includes(day.toLowerCase())) {
+        errors.push(`Row ${rowNum}: "day" value "${escHtml(day)}" not recognised — must be Monday–Friday`);
+        return;
+      }
+      if (!VALID_PLATFORMS.includes(platform)) {
+        errors.push(`Row ${rowNum}: "platform" value "${escHtml(platform)}" not recognised — must be ${VALID_PLATFORMS.join(', ')}`);
+        return;
+      }
+      if (!caption) {
+        errors.push(`Row ${rowNum}: "caption" is empty`);
+        return;
+      }
+
+      const dayNorm = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
+      posts.push({
+        id:            `${dayNorm}-${platform}-${Date.now()}-${Math.random().toString(36).slice(2,5)}`,
+        day:           dayNorm,
+        dayTheme:      (row.day_theme || '').trim(),
+        platform,
+        caption,
+        hashtags:      (row.hashtags || '').trim(),
+        bestTime:      (row.best_time || '').trim() || PLATFORM_TIMES[platform],
+        scheduledDate: getScheduledDateForDay(dayNorm),
+        status:        'pending',
+        mediaUrl:      (row.media_url || '').trim()
+      });
+    });
+
+    if (errors.length) {
+      document.getElementById('importErrorList').innerHTML =
+        errors.map(msg => `<div>• ${msg}</div>`).join('');
+      document.getElementById('importErrorBanner').classList.add('show');
+    }
+
+    if (!posts.length) {
+      showToast('No valid posts found in CSV', 'error');
+      return;
+    }
+
+    state.posts = posts;
+    saveSession();
+    setStep(3);
+    renderApprovalBoard();
+    updateStats();
+    showPhase('approval');
+    showToast(`✓ ${posts.length} post${posts.length !== 1 ? 's' : ''} imported from CSV`, 'success');
+  };
+
+  reader.onerror = () => showToast('Failed to read file', 'error');
+  reader.readAsText(file);
+}
+
+function downloadSampleCSV() {
+  const sample = [
+    'day,platform,caption,hashtags,best_time,media_url,day_theme',
+    'Monday,facebook,"Big news from Old Oak Common — construction reaches a new milestone this week! 🏗️",#OldOak #HS2 #WestLondon,9:00am,,Week in Review',
+    'Monday,instagram,"Construction update 🏗️ — things are moving fast at Old Oak Common. Watch this space!",#OldOakCommon #HS2 #London,11:00am,https://example.com/image.jpg,Week in Review',
+    'Monday,linkedin,"OPDC publishes Q1 planning update for Old Oak Common — key figures and milestones inside.",#UrbanRegeneration #HS2 #OldOak,8:00am,,Week in Review',
+    'Tuesday,facebook,"Did you know 25,500 new homes are planned for Old Oak Common? Here\'s what that means for local residents.",#OldOak #Housing #WestLondon,9:00am,,Community Focus',
+    'Tuesday,instagram,"Community garden project blooms in Old Oak 🌱 — residents take ownership of shared green spaces.",#OldOakCommunity #GreenSpaces,11:00am,,Community Focus',
+    'Tuesday,linkedin,"65,000 jobs expected at Old Oak Common by 2039 — what sectors are driving regeneration growth?",#Jobs #Regeneration #HS2,8:00am,,Community Focus',
+    'Wednesday,facebook,"Planning applications up 18% in the Old Oak area — here\'s what\'s in the pipeline.",#OldOak #Planning #WestLondon,9:00am,,Planning Watch',
+    'Wednesday,instagram,"New local business spotlight: meet the entrepreneurs setting up shop in Old Oak 🛍️",#OldOakBusiness #WestLondon,11:00am,,Planning Watch',
+    'Wednesday,linkedin,"How Old Oak Common\'s HS2 interchange will reshape commuter patterns across West London.",#HS2 #Transport #OldOak,8:00am,,Planning Watch',
+    'Thursday,facebook,"Community event this weekend: Old Oak Common residents open day — all welcome 🌳",#OldOak #Community #WestLondon,9:00am,,Community Events',
+    'Thursday,instagram,"Behind the scenes at Old Oak Common 📸 — our photographer captures the scale of regeneration.",#OldOakCommon #Photography,11:00am,,Community Events',
+    'Thursday,linkedin,"OPDC announces new infrastructure investment for Park Royal — details and timeline.",#ParkRoyal #Infrastructure #OPDC,8:00am,,Community Events',
+    'Friday,facebook,"Week in review: the top 5 Old Oak Common stories you need to know 📰",#OldOak #WeeklyRoundup #HS2,9:00am,,Week Wrap',
+    'Friday,instagram,"Friday vibes from Old Oak Common 🌳 — have a great weekend from the team!",#OldOakCommon #WeekendVibes,11:00am,,Week Wrap',
+    'Friday,linkedin,"Weekly digest: Old Oak Common development highlights and what\'s coming next.",#OldOak #UrbanDevelopment #WeeklyDigest,8:00am,,Week Wrap'
+  ].join('\n');
+
+  const blob = new Blob([sample], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'social-posts-sample.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Sample CSV downloaded ✓', 'success');
 }
 </script>
 </body>
